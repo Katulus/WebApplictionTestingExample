@@ -1,0 +1,24 @@
+﻿<h2>{{ vm.title }}</h2>
+
+<div class="panel panel-default sw-wizard">
+    <div class="panel-heading">
+        <div ng-repeat="step in vm.stepDefinitions" class="sw-wizard-nav-item" ng-class="vm.currentStepIndex == $index ? 'active' : ''">
+            <span class="sw-label">{{step.Title}}</span> <span ng-if="!$last">/</span>
+        </div>
+        <hr class="sw-clear"/>
+    </div>
+    <div class="panel-body">
+        <div class="sw-wizard-step-content">
+            <sw-wizard-step control-name="vm.currentStepControlName" node="vm.node" register-step="vm.registerStep"></sw-wizard-step>
+        </div>
+        <div class="sw-wizard-error-message sw-error-message" ng-show="vm.showError">{{ vm.errorMessage }}</div>
+    </div>
+    <div class="panel-footer">
+        <div class="sw-wizard-button-panel">
+            <button class="btn btn-default" ng-click="vm.back()" ng-disabled="vm.cantGoBack">Back</button>
+            <button class="btn btn-primary next" ng-click="vm.next()" ng-show="!vm.cantGoForward">Next</button>
+            <button class="btn btn-primary add" ng-click="vm.addNode()" ng-show="vm.cantGoForward">Add node</button>
+            <button class="btn btn-default" ng-click="vm.cancel()">Cancel</button>
+        </div>
+    </div>
+</div>
