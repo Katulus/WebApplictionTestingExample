@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Threading.Tasks;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using Server;
@@ -11,7 +12,7 @@ namespace ServerApiTests
     public class AddNodeWizardApiTest : ApiTestBase
     {
         // Set to URL of running application server instance
-        private const string BaseUrl = "http://localhost:8081/server";
+        private const string BaseUrl = "http://localhost:63598/server";
 
         [SetUp]
         public void Setup()
@@ -21,7 +22,7 @@ namespace ServerApiTests
         }
 
         [Test]
-        public async void GetSteps_ReturnsSteps()
+        public async Task GetSteps_ReturnsSteps()
         {
             HttpWebResponse response = Get(BaseUrl + "/wizard/steps");
 
@@ -47,7 +48,7 @@ namespace ServerApiTests
         }
 
         [Test]
-        public async void WalkThroughWizard_WithValidNode_AllowsNextOnFirstStep()
+        public async Task WalkThroughWizard_WithValidNode_AllowsNextOnFirstStep()
         {
             Node node = new Node() { IpOrHostname = "1.2.3.4", PollingMethod = "ICMP" };
 
@@ -60,7 +61,7 @@ namespace ServerApiTests
         }
 
         [Test]
-        public async void WalkThroughWizard_WithInvalidNode_DoesNodeAllowNextOnFirstStep()
+        public async Task WalkThroughWizard_WithInvalidNode_DoesNodeAllowNextOnFirstStep()
         {
             Node node = new Node() { IpOrHostname = "", PollingMethod = "ICMP" };
 
@@ -74,7 +75,7 @@ namespace ServerApiTests
         }
 
         [Test]
-        public async void WalkThroughWizard_WithValidNode_DoesNotAllowNextOnLastStep()
+        public async Task WalkThroughWizard_WithValidNode_DoesNotAllowNextOnLastStep()
         {
             Node node = new Node() { IpOrHostname = "1.2.3.4", PollingMethod = "ICMP" };
 
