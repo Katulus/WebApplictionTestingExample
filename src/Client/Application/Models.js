@@ -19,11 +19,11 @@ var AddNodeWizard;
     var PollingMethod = (function () {
         function PollingMethod() {
         }
+        PollingMethod.ICMP = "ICMP";
+        PollingMethod.SNMP = "SNMP";
+        PollingMethod.WMI = "WMI";
         return PollingMethod;
     }());
-    PollingMethod.ICMP = "ICMP";
-    PollingMethod.SNMP = "SNMP";
-    PollingMethod.WMI = "WMI";
     AddNodeWizard.PollingMethod = PollingMethod;
 })(AddNodeWizard || (AddNodeWizard = {}));
 //# sourceMappingURL=Models.js.map
