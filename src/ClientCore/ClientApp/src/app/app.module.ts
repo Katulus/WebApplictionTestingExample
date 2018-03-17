@@ -10,11 +10,11 @@ import { HomeComponent } from './home/home.component';
 import { CounterComponent } from './counter/counter.component';
 import { FetchDataComponent } from './fetch-data/fetch-data.component';
 import { WizardComponent } from './wizard/wizard.component';
-import { WizardService } from './wizard.service';
 import { WizardStepDirective } from './wizard-step.directive';
 import { DefineNodeWizardStepComponent } from './wizard-steps/define-node-wizard-step/define-node-wizard-step.component';
 import { SummaryWizardStepComponent } from './wizard-steps/summary-wizard-step/summary-wizard-step.component';
 import { NodesService } from './nodes.service';
+import { WizardService } from './wizard.service';
 
 @NgModule({
   declarations: [

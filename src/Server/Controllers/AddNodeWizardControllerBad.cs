@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Web.Http;
+using System.Web.Http.Cors;
 using System.Web.Http.Description;
 using System.Xml.Linq;
 using Server.DAL;
@@ -11,6 +12,7 @@ using Server.WizardSteps;
 
 namespace Server.Controllers
 {
+    [EnableCors(origins: "*", headers: "*", methods: "*")]
     [RoutePrefix("wizardBad")]
     public class AddNodeWizardControllerBad : ApiController
     { 

@@ -2,7 +2,7 @@ import { TestBed, getTestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 
 import { WizardService } from './wizard.service';
-import { Node } from "./models";
+import { Node } from './models';
 
 describe('WizardService', () => {
   let injector: TestBed;
@@ -24,8 +24,8 @@ describe('WizardService', () => {
     expect(service).toBeTruthy();
   });
 
-  it("loads steps from web service", () => {
-    var loadedSteps;
+  it('loads steps from web service', () => {
+    let loadedSteps;
     service.loadSteps((steps) => { loadedSteps = steps; }, () => { });
 
     const request = httpMock.expectOne({ method: 'GET' });
@@ -40,7 +40,7 @@ describe('WizardService', () => {
     expect(loadedSteps[1].Id).toBe('Step2');
   });
 
-  it("calls to web service on next()", () => {
+  it('calls to web service on next()', () => {
     service.next(null, () => { }, () => { });
 
     const request = httpMock.expectOne({ method: 'POST' });
@@ -48,8 +48,8 @@ describe('WizardService', () => {
     request.flush({ CanTransition: true });
   });
 
-  it("sends node to web service on next()", () => {
-    var node = new Node();
+  it('sends node to web service on next()', () => {
+    const node = new Node();
     service.next(node, () => { }, () => { });
 
     const request = httpMock.expectOne({ method: 'POST' });
@@ -58,8 +58,8 @@ describe('WizardService', () => {
     request.flush({ CanTransition: true });
   });
 
-  it("returns server response on next()", () => {
-    var returnedResult;
+  it('returns server response on next()', () => {
+    let returnedResult;
     service.next(null, (response) => {
       returnedResult = response;
     }, () => { });
@@ -67,11 +67,11 @@ describe('WizardService', () => {
     const request = httpMock.expectOne({ method: 'POST' });
     expect(request.request.url).toMatch(/.*\/next/);
     request.flush({ CanTransition: true });
-    expect(returnedResult.CanTransition).toBeTruthy("expected response should allow transition");
+    expect(returnedResult.CanTransition).toBeTruthy('expected response should allow transition');
   });
 
-  it("calls error handler on error in next()", () => {
-    var returnedError;
+  it('calls error handler on error in next()', () => {
+    let returnedError;
     service.next(null, () => { }, (error) => {
       returnedError = error;
     });
@@ -79,10 +79,10 @@ describe('WizardService', () => {
     const request = httpMock.expectOne({ method: 'POST' });
     expect(request.request.url).toMatch(/.*\/next/);
     request.flush('', { status: 500, statusText: 'test error' });
-    expect(returnedError).toBe("test error");
+    expect(returnedError).toBe('test error');
   });
 
-  it("calls to web service on back()", () => {
+  it('calls to web service on back()', () => {
     service.back(() => { }, () => { });
 
     const request = httpMock.expectOne({ method: 'POST' });
@@ -90,8 +90,8 @@ describe('WizardService', () => {
     request.flush({ CanTransition: true });
   });
 
-  it("returns server response on back()", () => {
-    var returnedResult;
+  it('returns server response on back()', () => {
+    let returnedResult;
     service.back((response) => {
       returnedResult = response;
     }, () => { });
@@ -100,37 +100,37 @@ describe('WizardService', () => {
     const request = httpMock.expectOne({ method: 'POST' });
     expect(request.request.url).toMatch(/.*\/back/);
     request.flush({ CanTransition: true });
-    expect(returnedResult.CanTransition).toBeTruthy("expected response should allow transition");
+    expect(returnedResult.CanTransition).toBeTruthy('expected response should allow transition');
   });
 
-  it("calls error handler on error in back()", () => {
-    var returnedError;
+  it('calls error handler on error in back()', () => {
+    let returnedError;
     service.back(() => { }, (error) => {
       returnedError = error;
     });
 
     const request = httpMock.expectOne({ method: 'POST' });
     expect(request.request.url).toMatch(/.*\/back/);
-    request.flush("", { status: 500, statusText: 'test error' });
-    expect(returnedError).toBe("test error");
+    request.flush('', { status: 500, statusText: 'test error' });
+    expect(returnedError).toBe('test error');
   });
 
-  it("calls web service on addNode()", () => {
+  it('calls web service on addNode()', () => {
     service.addNode(null, () => { }, () => { });
 
     const request = httpMock.expectOne({ method: 'POST' });
     expect(request.request.url).toMatch(/.*\/add/);
-    request.flush("", { status: 200, statusText: '' });
+    request.flush('', { status: 200, statusText: '' });
   });
 
-  it("sends node to web service on addNode()", () => {
-    var node = new Node();
+  it('sends node to web service on addNode()', () => {
+    const node = new Node();
     service.addNode(node, () => { }, () => { });
 
     const request = httpMock.expectOne({ method: 'POST' });
     expect(request.request.url).toMatch(/.*\/add/);
     expect(request.request.body).toBe(node);
-    request.flush("", { status: 200, statusText: '' });
+    request.flush('', { status: 200, statusText: '' });
   });
 
   // ... more tests for rest of the methods ...

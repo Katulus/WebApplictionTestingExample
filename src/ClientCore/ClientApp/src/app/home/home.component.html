@@ -6,7 +6,7 @@
     <th>Address</th>
     <th>Type</th>
   </tr>
-  <tr *ngFor="let node of nodes">
+  <tr *ngFor="let node of nodes" class="node">
     <td>{{node.Id}}</td>
     <td>{{node.IpOrHostname}}</td>
     <td>{{node.PollingMethod}}</td>
@@ -14,4 +14,4 @@
 </table>
 
 <a class="btn btn-primary" routerLink="/add" id="addNodeButton">+ Add Node</a>
-<a class="btn btn-danger" ng-click="deleteAll()" id="deleteAllButton">Delete all</a>
+<a class="btn btn-danger" (click)="deleteAll()" id="deleteAllButton">Delete all</a>

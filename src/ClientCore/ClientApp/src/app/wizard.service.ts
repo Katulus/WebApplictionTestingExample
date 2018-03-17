@@ -14,7 +14,7 @@ export interface IWizardService {
 @Injectable()
 export class WizardService extends HttpServiceBase implements IWizardService {
 
-  private _wizardServiceAddress: string = '/server/wizard';
+  private _wizardServiceAddress = '/wizard';
 
   static Create(http: HttpClient): IWizardService {
     return new WizardService(http);

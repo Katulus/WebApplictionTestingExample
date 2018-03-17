@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
+using System.Web.Http.Cors;
 using System.Web.Http.Description;
 using Server.Models;
 
 namespace Server.Controllers
 {
+    [EnableCors(origins: "*", headers: "*", methods: "*")]
     [RoutePrefix("wizard")]
     public class AddNodeWizardController : ApiController
     {
@@ -15,13 +17,8 @@ namespace Server.Controllers
 
         public AddNodeWizardController(IWizardSession session, INodeService nodeService)
         {
-            if (session == null)
-                throw new ArgumentNullException(nameof(session));
-            if (nodeService == null)
-                throw new ArgumentNullException(nameof(nodeService));
-            _session = session;
-
-            _nodeService = nodeService;
+            _session = session ?? throw new ArgumentNullException(nameof(session));
+            _nodeService = nodeService ?? throw new ArgumentNullException(nameof(nodeService));
         }
 
         [HttpGet]

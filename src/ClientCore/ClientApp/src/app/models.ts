@@ -14,6 +14,12 @@ export interface StepTransitionResult {
   ErrorMessage: string;
 }
 
+export class PollingMethod {
+  static ICMP = 'ICMP';
+  static SNMP = 'SNMP';
+  static WMI = 'WMI';
+}
+
 export class Node {
   Id: number;
   IpOrHostname: string;
@@ -44,10 +50,4 @@ export interface WmiCredentials {
   Username: string;
   Password: string;
   PasswordConfirm: string;
-}
-
-export class PollingMethod {
-  static ICMP: string = 'ICMP';
-  static SNMP: string = 'SNMP';
-  static WMI: string = 'WMI';
 }

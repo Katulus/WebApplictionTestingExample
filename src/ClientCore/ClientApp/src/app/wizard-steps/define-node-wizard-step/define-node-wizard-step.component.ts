@@ -6,13 +6,7 @@ import { Node, PollingMethod } from '../../models';
   templateUrl: './define-node-wizard-step.component.html',
   styleUrls: ['./define-node-wizard-step.component.css']
 })
-export class DefineNodeWizardStepComponent implements OnInit {
-
-  constructor() { }
-
-  ngOnInit() {
-  }
-
+export class DefineNodeWizardStepComponent {
   public node: Node = new Node();
 
   public ipAddressOrHostnameIsValid: boolean;

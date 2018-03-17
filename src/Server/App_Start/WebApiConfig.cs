@@ -18,6 +18,7 @@ namespace Server
 
             // Web API routes
             config.MapHttpAttributeRoutes();
+            config.EnableCors();
         }
     }
 }

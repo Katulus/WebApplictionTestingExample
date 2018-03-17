@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 
 export abstract class HttpServiceBase {
-  private _baseAddress: string = 'http://localhost:63598';
+  private _baseAddress = 'http://localhost:63599';
 
   constructor(private http: HttpClient) {
   }

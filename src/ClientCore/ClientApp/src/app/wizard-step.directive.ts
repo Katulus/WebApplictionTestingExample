@@ -1,7 +1,7 @@
 import { Directive, ViewContainerRef } from '@angular/core';
 
 @Directive({
-  selector: '[wizard-step]'
+  selector: '[appWizardStep]'
 })
 export class WizardStepDirective {
 

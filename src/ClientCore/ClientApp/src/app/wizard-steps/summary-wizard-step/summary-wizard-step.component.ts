@@ -6,13 +6,7 @@ import { Node } from '../../models';
   templateUrl: './summary-wizard-step.component.html',
   styleUrls: ['./summary-wizard-step.component.css']
 })
-export class SummaryWizardStepComponent implements OnInit {
-
-  constructor() { }
-
-  ngOnInit() {
-  }
-
+export class SummaryWizardStepComponent {
   private node: Node = new Node();
 
   public setNode(node: Node): void {

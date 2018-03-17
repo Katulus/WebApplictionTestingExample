@@ -1,5 +1,4 @@
-import { TestBed, inject, getTestBed } from '@angular/core/testing';
-
+import { TestBed, getTestBed } from '@angular/core/testing';
 import { NodesService } from './nodes.service';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 
@@ -19,7 +18,7 @@ describe('NodesService', () => {
     httpMock = injector.get(HttpTestingController);
   });
 
-  it('should be created', inject([NodesService], (service: NodesService) => {
+  it('should be created', () => {
     expect(service).toBeTruthy();
-  }));
+  });
 });
