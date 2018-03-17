@@ -19,8 +19,8 @@ export class Node {
   IpOrHostname: string;
   PollingMethod: PollingMethod;
 
-  SnmpCredentials: SnmpCredentials = { Port: 161, CommunityString: 'public' };
-  WmiCredentials: WmiCredentials = { Username: '', Password: '', PasswordConfirm: '' };
+  SnmpCredentials?: SnmpCredentials = { Port: 161, CommunityString: 'public' };
+  WmiCredentials?: WmiCredentials = { Username: '', Password: '', PasswordConfirm: '' };
 
   constructor(ipOrHostname?: string) {
     this.IpOrHostname = ipOrHostname;

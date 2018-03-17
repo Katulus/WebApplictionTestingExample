@@ -11,6 +11,10 @@ import { CounterComponent } from './counter/counter.component';
 import { FetchDataComponent } from './fetch-data/fetch-data.component';
 import { WizardComponent } from './wizard/wizard.component';
 import { WizardService } from './wizard.service';
+import { WizardStepDirective } from './wizard-step.directive';
+import { DefineNodeWizardStepComponent } from './wizard-steps/define-node-wizard-step/define-node-wizard-step.component';
+import { SummaryWizardStepComponent } from './wizard-steps/summary-wizard-step/summary-wizard-step.component';
+import { NodesService } from './nodes.service';
 
 @NgModule({
   declarations: [
@@ -19,21 +23,25 @@ import { WizardService } from './wizard.service';
     HomeComponent,
     CounterComponent,
     FetchDataComponent,
-    WizardComponent
+    WizardComponent,
+    WizardStepDirective,
+    DefineNodeWizardStepComponent,
+    SummaryWizardStepComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
     HttpClientModule,
     FormsModule,
     RouterModule.forRoot([
-      { path: '', component: WizardComponent, pathMatch: 'full' },
-      { path: 'counter', component: CounterComponent },
-      { path: 'fetch-data', component: FetchDataComponent },
+      { path: '', component: HomeComponent, pathMatch: 'full' },
+      { path: 'add', component: WizardComponent }
     ])
   ],
   providers: [
+    NodesService,
     WizardService
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [DefineNodeWizardStepComponent, SummaryWizardStepComponent]
 })
 export class AppModule { }
