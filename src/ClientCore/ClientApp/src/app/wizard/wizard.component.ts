@@ -23,7 +23,7 @@ export class WizardComponent implements OnInit {
   public showError: boolean;
 
   public node: Node;
-  private currentStep: IWizardStep;
+  public currentStep: IWizardStep;
   private currentStepControlName: string;
 
   private components = {
@@ -130,6 +130,7 @@ export class WizardComponent implements OnInit {
       let viewContainerRef = this.wizardStepHost.viewContainerRef;
       viewContainerRef.clear();
       this.currentStep = <IWizardStep>viewContainerRef.createComponent(componentFactory).instance;
+      this.currentStep.setNode(this.node);
     }
   }
 
@@ -150,11 +151,6 @@ export class WizardComponent implements OnInit {
       (error) => {
         this.setError(error);
       });
-  }
-
-  public registerStep(step: IWizardStep): void {
-    this.currentStep = step;
-    this.currentStep.setNode(this.node);
   }
 
   private createNewNode(): void {

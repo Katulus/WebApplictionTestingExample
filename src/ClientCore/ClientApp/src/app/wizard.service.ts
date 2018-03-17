@@ -25,43 +25,23 @@ export class WizardService extends HttpServiceBase implements IWizardService {
   }
 
   public loadSteps(callback: (result: WizardStepDefinition[]) => void, errorCallback: (error: string) => void): void {
-    //this.get(this._wizardServiceAddress + '/steps', callback, errorCallback);
-    callback([{
-      ControlName: 'DefineNodeWizardStep',
-      Id: 'DefineNode',
-      Title: 'Define Node'
-    },
-      {
-        ControlName: 'SummaryWizardStep',
-        Id: 'Summary',
-        Title: 'Summary'
-      }]);
+    this.get(this._wizardServiceAddress + '/steps', callback, errorCallback);
   }
 
   public back(callback: (result: StepTransitionResult) => void, errorCallback: (error: string) => void): void {
-    //this.post(this._wizardServiceAddress + '/back', null, callback, errorCallback);
-    callback({
-      CanTransition: true,
-      ErrorMessage: ''
-    });
+    this.post(this._wizardServiceAddress + '/back', null, callback, errorCallback);
   }
 
   public next(node: Node, callback: (result: StepTransitionResult) => void, errorCallback: (error: string) => void): void {
-    //this.post(this._wizardServiceAddress + '/next', node, callback, errorCallback);
-    callback({
-      CanTransition: true,
-      ErrorMessage: ''
-    });
+    this.post(this._wizardServiceAddress + '/next', node, callback, errorCallback);
   }
 
   public cancel(callback: () => void, errorCallback: (error: string) => void): void {
-    //this.post(this._wizardServiceAddress + '/cancel', null, callback, errorCallback);
-    callback();
+    this.post(this._wizardServiceAddress + '/cancel', null, callback, errorCallback);
   }
 
   public addNode(node: Node, callback: () => void, errorCallback: (error: string) => void): void {
-    //this.post(this._wizardServiceAddress + '/add', node, callback, errorCallback);
-    callback();
+    this.post(this._wizardServiceAddress + '/add', node, callback, errorCallback);
   }
 
 }

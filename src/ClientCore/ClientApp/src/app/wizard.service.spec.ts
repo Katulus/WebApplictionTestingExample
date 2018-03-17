@@ -1,15 +1,137 @@
-import { TestBed, inject } from '@angular/core/testing';
+import { TestBed, getTestBed } from '@angular/core/testing';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 
 import { WizardService } from './wizard.service';
+import { Node } from "./models";
 
-describe('WizardServiceService', () => {
+describe('WizardService', () => {
+  let injector: TestBed;
+  let service: WizardService;
+  let httpMock: HttpTestingController;
+
   beforeEach(() => {
     TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule],
       providers: [WizardService]
     });
+
+    injector = getTestBed();
+    service = injector.get(WizardService);
+    httpMock = injector.get(HttpTestingController);
   });
 
-  it('should be created', inject([WizardService], (service: WizardService) => {
+  it('should be created', () => {
     expect(service).toBeTruthy();
-  }));
+  });
+
+  it("loads steps from web service", () => {
+    var loadedSteps;
+    service.loadSteps((steps) => { loadedSteps = steps; }, () => { });
+
+    const request = httpMock.expectOne({ method: 'GET' });
+    expect(request.request.url).toMatch(/.*\/steps/);
+    request.flush([
+      { Id: 'Step1', ControlName: 'Step1Control', Title: 'Step 1' },
+      { Id: 'Step2', ControlName: 'Step2Control', Title: 'Step 2' }
+    ]);
+
+    expect(loadedSteps.length).toBe(2, 'Wrong number of steps returned.');
+    expect(loadedSteps[0].Id).toBe('Step1');
+    expect(loadedSteps[1].Id).toBe('Step2');
+  });
+
+  it("calls to web service on next()", () => {
+    service.next(null, () => { }, () => { });
+
+    const request = httpMock.expectOne({ method: 'POST' });
+    expect(request.request.url).toMatch(/.*\/next/);
+    request.flush({ CanTransition: true });
+  });
+
+  it("sends node to web service on next()", () => {
+    var node = new Node();
+    service.next(node, () => { }, () => { });
+
+    const request = httpMock.expectOne({ method: 'POST' });
+    expect(request.request.url).toMatch(/.*\/next/);
+    expect(request.request.body).toBe(node);
+    request.flush({ CanTransition: true });
+  });
+
+  it("returns server response on next()", () => {
+    var returnedResult;
+    service.next(null, (response) => {
+      returnedResult = response;
+    }, () => { });
+
+    const request = httpMock.expectOne({ method: 'POST' });
+    expect(request.request.url).toMatch(/.*\/next/);
+    request.flush({ CanTransition: true });
+    expect(returnedResult.CanTransition).toBeTruthy("expected response should allow transition");
+  });
+
+  it("calls error handler on error in next()", () => {
+    var returnedError;
+    service.next(null, () => { }, (error) => {
+      returnedError = error;
+    });
+
+    const request = httpMock.expectOne({ method: 'POST' });
+    expect(request.request.url).toMatch(/.*\/next/);
+    request.flush('', { status: 500, statusText: 'test error' });
+    expect(returnedError).toBe("test error");
+  });
+
+  it("calls to web service on back()", () => {
+    service.back(() => { }, () => { });
+
+    const request = httpMock.expectOne({ method: 'POST' });
+    expect(request.request.url).toMatch(/.*\/back/);
+    request.flush({ CanTransition: true });
+  });
+
+  it("returns server response on back()", () => {
+    var returnedResult;
+    service.back((response) => {
+      returnedResult = response;
+    }, () => { });
+
+
+    const request = httpMock.expectOne({ method: 'POST' });
+    expect(request.request.url).toMatch(/.*\/back/);
+    request.flush({ CanTransition: true });
+    expect(returnedResult.CanTransition).toBeTruthy("expected response should allow transition");
+  });
+
+  it("calls error handler on error in back()", () => {
+    var returnedError;
+    service.back(() => { }, (error) => {
+      returnedError = error;
+    });
+
+    const request = httpMock.expectOne({ method: 'POST' });
+    expect(request.request.url).toMatch(/.*\/back/);
+    request.flush("", { status: 500, statusText: 'test error' });
+    expect(returnedError).toBe("test error");
+  });
+
+  it("calls web service on addNode()", () => {
+    service.addNode(null, () => { }, () => { });
+
+    const request = httpMock.expectOne({ method: 'POST' });
+    expect(request.request.url).toMatch(/.*\/add/);
+    request.flush("", { status: 200, statusText: '' });
+  });
+
+  it("sends node to web service on addNode()", () => {
+    var node = new Node();
+    service.addNode(node, () => { }, () => { });
+
+    const request = httpMock.expectOne({ method: 'POST' });
+    expect(request.request.url).toMatch(/.*\/add/);
+    expect(request.request.body).toBe(node);
+    request.flush("", { status: 200, statusText: '' });
+  });
+
+  // ... more tests for rest of the methods ...
 });

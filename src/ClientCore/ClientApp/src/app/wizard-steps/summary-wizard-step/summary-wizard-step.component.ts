@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Node } from '../../models';
 
 @Component({
   selector: 'app-summary-wizard-step',
@@ -12,4 +13,13 @@ export class SummaryWizardStepComponent implements OnInit {
   ngOnInit() {
   }
 
+  private node: Node = new Node();
+
+  public setNode(node: Node): void {
+    this.node = node;
+  }
+
+  public onNext(): boolean {
+    return true;
+  }
 }

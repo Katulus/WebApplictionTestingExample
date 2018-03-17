@@ -1,6 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SummaryWizardStepComponent } from './summary-wizard-step.component';
+import { FormsModule } from '@angular/forms';
 
 describe('SummaryWizardStepComponent', () => {
   let component: SummaryWizardStepComponent;
@@ -8,9 +9,12 @@ describe('SummaryWizardStepComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ SummaryWizardStepComponent ]
+      declarations: [SummaryWizardStepComponent],
+      imports: [
+        FormsModule
+      ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

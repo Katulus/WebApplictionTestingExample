@@ -13,7 +13,7 @@ export class DefineNodeWizardStepComponent implements OnInit {
   ngOnInit() {
   }
 
-  public node: Node;
+  public node: Node = new Node();
 
   public ipAddressOrHostnameIsValid: boolean;
   public ipAddressOrHostnameValidationError: string;
