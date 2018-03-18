@@ -9,7 +9,7 @@
         // load and execute script with controller
         $http.get('/Application/Controls/' + controlName + '/' + controllerName + '.js').success((script) => {
                 // This is naive way of dynamically loading and executing script. But it works for the purpose of this example.
-                $.globalEval(script);
+                jQuery.globalEval(script);
 
                 app.controllerProvider.register(controllerName, function() {
                     return new AddNodeWizard[controllerName]();
