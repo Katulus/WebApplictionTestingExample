@@ -1,10 +1,30 @@
 import { browser, by, element, promise } from 'protractor';
 
 export class SummaryWizardStepComponentPage {
-  private _addButton = element(by.css('.add'));
+  private addButton = element(by.css('.add'));
+  private nodeAddressElement = element(by.id('nodeAddress'));
+  private nodePollingMethodElement = element(by.id('nodePollingMethod'));
+  private snmpPortElement = element(by.id('snmpPort'));
+  private snmpCommunityStringElement = element(by.id('snmpCommunityString'));
 
   public addNode() {
-    this._addButton.click();
+    this.addButton.click();
+  }
+
+  public getNodeAddress(): promise.Promise<string> {
+    return this.nodeAddressElement.getText();
+  }
+
+  public getNodePollingMethod(): promise.Promise<string> {
+    return this.nodePollingMethodElement.getText();
+  }
+
+  public getSnmpPort(): promise.Promise<number> {
+    return this.snmpPortElement.getText().then(x => Number.parseInt(x));
+  }
+
+  public getSnmpCommunityString(): promise.Promise<string> {
+    return this.snmpCommunityStringElement.getText();
   }
 
   public isActive(): promise.Promise<boolean> {

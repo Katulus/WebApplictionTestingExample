@@ -2,13 +2,13 @@
 <p>Specify the node you want to add by filling the fields below.</p>
 
 <form class="form-horizontal">
-  <div class="form-group">
+  <div class="form-group" [class.has-error]="!ipAddressOrHostnameIsValid">
     <label class="col-md-2 control-label">IP or hostname:</label>
     <div class="col-md-10">
       <input type="text" class="form-control" name="ipOrHostname" [(ngModel)]="node.IpOrHostname" />
       <!-- validation error for node address -->
       <span class="sw-error-message" *ngIf="!ipAddressOrHostnameIsValid">{{ipAddressOrHostnameValidationError}}</span>
-    </div>
+</div>
   </div>
   <div class="form-group">
     <label class="col-md-2 control-label">Polling Method:</label>
@@ -49,19 +49,19 @@
 
   <!-- show only for WMI node type -->
   <div *ngIf="node.isWmi()">
-    <div class="form-group">
+    <div class="form-group" [class.has-error]="!credentialsAreValid">
       <label class="col-md-2 control-label">Username:</label>
       <div class="col-md-10">
         <input class="form-control" type="text" name="wmiUser" [(ngModel)]="node.WmiCredentials.Username" />
       </div>
     </div>
-    <div class="form-group">
+    <div class="form-group" [class.has-error]="!credentialsAreValid">
       <label class="col-md-2 control-label">Password:</label>
       <div class="col-md-10">
         <input class="form-control" type="password" name="wmiPAssword" [(ngModel)]="node.WmiCredentials.Password" />
       </div>
     </div>
-    <div class="form-group">
+    <div class="form-group" [class.has-error]="!credentialsAreValid">
       <label class="col-md-2 control-label">Password confirm:</label>
       <div class="col-md-10">
         <input class="form-control" type="password" name="wmiPassword2" [(ngModel)]="node.WmiCredentials.PasswordConfirm" />

@@ -9,10 +9,10 @@ import { Node, PollingMethod } from '../../models';
 export class DefineNodeWizardStepComponent {
   public node: Node = new Node();
 
-  public ipAddressOrHostnameIsValid: boolean;
+  public ipAddressOrHostnameIsValid = true;
   public ipAddressOrHostnameValidationError: string;
 
-  public credentialsAreValid: boolean;
+  public credentialsAreValid = true;
   public credentialsValidationError: string;
 
   public showSnmpCredentials: boolean;

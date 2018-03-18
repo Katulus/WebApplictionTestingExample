@@ -1,14 +1,11 @@
-import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 
 export abstract class HttpServiceBase {
-  private _baseAddress = 'http://localhost:63599';
-
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient, private baseUrl: string) {
   }
 
   protected get<T>(path: string, callback: (result: T) => void, errorCallback?: (error: string) => void): void {
-    this.http.get<T>(this._baseAddress + path).subscribe((result: T) => {
+    this.http.get<T>(this.baseUrl + path).subscribe((result: T) => {
       callback(result);
     }, (error: HttpErrorResponse) => {
       if (errorCallback) {
@@ -18,7 +15,7 @@ export abstract class HttpServiceBase {
   }
 
   protected post<T>(path: string, data: any, callback: (result: T) => void, errorCallback?: (error: string) => void): void {
-    this.http.post(this._baseAddress + path, data).subscribe((result: T) => {
+    this.http.post(this.baseUrl + path, data).subscribe((result: T) => {
       callback(result);
     }, (error: HttpErrorResponse) => {
       if (errorCallback) {

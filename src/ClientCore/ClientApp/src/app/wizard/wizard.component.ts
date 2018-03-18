@@ -26,7 +26,7 @@ export class WizardComponent implements OnInit {
   public currentStep: IWizardStep;
   private currentStepControlName: string;
 
-  private components = {
+  public components: any = {
     'DefineNodeWizardStep': DefineNodeWizardStepComponent,
     'SummaryWizardStep': SummaryWizardStepComponent,
   };

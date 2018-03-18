@@ -14,28 +14,6 @@ describe('App', () => {
     page = new AppPage();
   });
 
-  it('should go to next step after clicking on Next button', () => {
-    const addNodeStep = new DefineNodeWizardStepComponentPage();
-    addNodeStep.navigate();
-
-    browser.sleep(sleepDuration);
-
-    // wait until steps are loaded
-    browser.wait(addNodeStep.isLoaded());
-    browser.sleep(sleepDuration);
-
-    // fill in IP address
-    addNodeStep.setAddress('10.20.30.40');
-    browser.sleep(sleepDuration);
-
-    // click on Next button
-    const summaryStep = addNodeStep.next();
-    browser.sleep(sleepDuration);
-
-    // check that second step is highlighted as active
-    expect(summaryStep.isActive()).toBeTruthy('Second step is not active');
-  });
-
   it('is able to go through whole wizard and add a node', () => {
     const indexPage = new HomeComponentPage();
     indexPage.navigate();
@@ -56,13 +34,34 @@ describe('App', () => {
     addNodeStep.setAddress('10.20.30.40');
     browser.sleep(sleepDuration);
 
-    // fill select SNMP node
+    // select SNMP node
     addNodeStep.setSnmpMethod();
+    browser.sleep(sleepDuration);
+
+    // select SNMP node
+    addNodeStep.setSnmpMethod();
+    browser.sleep(sleepDuration);
+
+    // change port
+    addNodeStep.setSnmpPort(123);
+    browser.sleep(sleepDuration);
+
+    // change community string
+    addNodeStep.setSnmpCommunityString('testCommunityString');
     browser.sleep(sleepDuration);
 
     // click on Next button to get to summary
     const summaryStep = addNodeStep.next();
     browser.sleep(sleepDuration);
+
+    // check that second step is highlighted as active
+    expect(summaryStep.isActive()).toBeTruthy('Second step is not active');
+
+    // check that summary step shows proper data
+    expect(summaryStep.getNodeAddress()).toBe('10.20.30.40', 'Node address is not correct');
+    expect(summaryStep.getNodePollingMethod()).toBe('SNMP', 'Node polling method is not correct');
+    expect(summaryStep.getSnmpPort()).toBe(123, 'Node SNMP port is not correct');
+    expect(summaryStep.getSnmpCommunityString()).toBe('testCommunityString', 'Node SNMP community string is not correct');
 
     // click on Add Node button
     summaryStep.addNode();

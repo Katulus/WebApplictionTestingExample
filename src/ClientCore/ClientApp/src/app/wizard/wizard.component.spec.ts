@@ -1,14 +1,37 @@
+import { Component } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { WizardComponent } from './wizard.component';
 import { WizardService } from '../wizard.service';
 import { Node, WizardStepDefinition, StepTransitionResult } from '../models';
 import { RouterTestingModule } from '@angular/router/testing';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
-import { DefineNodeWizardStepComponent } from '../wizard-steps/define-node-wizard-step/define-node-wizard-step.component';
-import { SummaryWizardStepComponent } from '../wizard-steps/summary-wizard-step/summary-wizard-step.component';
 import { FormsModule } from '@angular/forms';
 import { WizardStepDirective } from '../wizard-step.directive';
 
+@Component({
+  selector: 'app-test-step1',
+  template: ''
+})
+export class TestWizardStep1Component {
+  public allowNext = true;
+  public setNode(node: Node): void {
+  }
+  public onNext(): boolean {
+    return this.allowNext;
+  }
+}
+@Component({
+  selector: 'app-test-step2',
+  template: ''
+})
+export class TestWizardStep2Component {
+  public allowNext = true;
+  public setNode(node: Node): void {
+  }
+  public onNext(): boolean {
+    return this.allowNext;
+  }
+}
 
 describe('WizardComponent', () => {
   let component: WizardComponent;
@@ -17,8 +40,8 @@ describe('WizardComponent', () => {
     loadSteps: jasmine.createSpy('loadSteps').and.callFake(
       (callback: (nodes: WizardStepDefinition[]) => void, failCallback) => {
         callback([
-          { Id: 'Step1', ControlName: 'DefineNodeWizardStep', Title: 'Step 1' },
-          { Id: 'Step2', ControlName: 'SummaryWizardStep', Title: 'Step 2' }
+          { Id: 'Step1', ControlName: 'TestWizardStep1', Title: 'Step 1' },
+          { Id: 'Step2', ControlName: 'TestWizardStep2', Title: 'Step 2' }
         ]);
       }),
     back: jasmine.createSpy('back'),
@@ -32,8 +55,8 @@ describe('WizardComponent', () => {
       declarations: [
         WizardComponent,
         WizardStepDirective,
-        DefineNodeWizardStepComponent,
-        SummaryWizardStepComponent],
+        TestWizardStep1Component,
+        TestWizardStep2Component],
       imports: [
         RouterTestingModule.withRoutes([]),
         FormsModule
@@ -46,7 +69,7 @@ describe('WizardComponent', () => {
     }).overrideModule(BrowserDynamicTestingModule,
       {
         set: {
-          entryComponents: [DefineNodeWizardStepComponent, SummaryWizardStepComponent]
+          entryComponents: [TestWizardStep1Component, TestWizardStep2Component]
         }
       })
       .compileComponents();
@@ -55,6 +78,10 @@ describe('WizardComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(WizardComponent);
     component = fixture.componentInstance;
+    component.components = {
+      'TestWizardStep1': TestWizardStep1Component,
+      'TestWizardStep2': TestWizardStep2Component
+    };
     fixture.detectChanges();
   });
 
@@ -72,12 +99,6 @@ describe('WizardComponent', () => {
     wizardServiceMock.next.and.callFake((node, callback: (result: StepTransitionResult) => void, failCallback) => {
       callback({ CanTransition: true, ErrorMessage: '' });
     });
-
-    const testStep = {
-      onNext: () => true,
-      setNode: (node: Node) => { }
-    };
-    component.currentStep = testStep;
 
     component.next();
 
@@ -99,11 +120,7 @@ describe('WizardComponent', () => {
       callback({ CanTransition: true, ErrorMessage: '' });
     });
 
-    const testStep = {
-      onNext: () => false,
-      setNode: (node: Node) => { }
-    };
-    component.currentStep = testStep;
+    (<any>component.currentStep).allowNext = false;
 
     component.next();
 

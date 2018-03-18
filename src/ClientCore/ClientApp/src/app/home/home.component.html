@@ -1,16 +1,20 @@
 <h2>Nodes</h2>
 
 <table class="table">
+  <thead>
   <tr>
     <th>ID</th>
     <th>Address</th>
     <th>Type</th>
   </tr>
-  <tr *ngFor="let node of nodes" class="node">
-    <td>{{node.Id}}</td>
-    <td>{{node.IpOrHostname}}</td>
-    <td>{{node.PollingMethod}}</td>
-  </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let node of nodes" class="node">
+      <td>{{node.Id}}</td>
+      <td>{{node.IpOrHostname}}</td>
+      <td>{{node.PollingMethod}}</td>
+    </tr>
+  </tbody>
 </table>
 
 <a class="btn btn-primary" routerLink="/add" id="addNodeButton">+ Add Node</a>
