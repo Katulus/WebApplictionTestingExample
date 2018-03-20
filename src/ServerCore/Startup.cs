@@ -1,32 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
-using Microsoft.EntityFrameworkCore.Migrations;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using ServerCore.DAL;
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace ServerCore
 {
-    public class Startup
+    public class Startup : IStartup
     {
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
-
-        public IConfiguration Configuration { get; }
-
         // This method gets called by the runtime. Use this method to add services to the container.
-        public void ConfigureServices(IServiceCollection services)
+        public virtual IServiceProvider ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
             services.AddCors(o => o.AddPolicy("EnableCors", builder =>
@@ -43,7 +29,21 @@ namespace ServerCore
             });
 
             AddDatabase(services);
+
+            services.AddSingleton<INodeDAL, NodeDAL>();
+            services.AddSingleton<INodePluginProvider, NodePluginProvider>();
+            services.AddSingleton<IWizardSession, WizardSession>();
+            services.AddSingleton<IWizardStepsProvider, WizardStepsProvider>();
+            services.AddSingleton<INodeService, NodeService>();
+            services.AddSingleton<IFilesContentProvider, FilesContentProvider>();
+            services.AddSingleton<IConfigurationProvider, ConfigurationProvider>();
+            services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
+            services.AddSingleton(typeof(ICache<>), typeof(Cache<>));
+
+            return services.BuildServiceProvider();
         }
+
+        
 
         private void AddDatabase(IServiceCollection services)
         {
@@ -53,12 +53,13 @@ namespace ServerCore
                     options.ConfigureWarnings(
                         warnings => warnings.Throw(RelationalEventId.QueryClientEvaluationWarning));
                     options.UseInMemoryDatabase("TestDatabase");
-                });
+                }, ServiceLifetime.Singleton);
+            services.AddSingleton<IServerDbContext, ServerDbContext>();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app)
         {
+            var env = app.ApplicationServices.GetService<IHostingEnvironment>();
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

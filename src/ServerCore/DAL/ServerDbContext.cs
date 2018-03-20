@@ -3,14 +3,14 @@ using ServerCore.Models;
 
 namespace ServerCore.DAL
 {
-    public interface IServerDbContex
+    public interface IServerDbContext
     {
         DbSet<Node> Nodes { get; }
 
         int SaveChanges();
     }
 
-    public class ServerDbContext : DbContext, IServerDbContex
+    public class ServerDbContext : DbContext, IServerDbContext
     {
         public ServerDbContext(DbContextOptions options)
             : base(options)

@@ -37,7 +37,7 @@ namespace ServerCore.Controllers
         [HttpPost]
         [Route("next")]
         [ProducesResponseType(typeof(StepTransitionResult), StatusCodes.Status200OK)]
-        public IActionResult Next(Node node)
+        public IActionResult Next([FromBody] Node node)
         {
             if (node == null)
                 throw new ArgumentNullException(nameof(node));
@@ -63,7 +63,7 @@ namespace ServerCore.Controllers
 
         [HttpPost]
         [Route("add")]
-        public IActionResult AddNode(Node node)
+        public IActionResult AddNode([FromBody] Node node)
         {
             if (node == null)
                 throw new ArgumentNullException(nameof(node));
