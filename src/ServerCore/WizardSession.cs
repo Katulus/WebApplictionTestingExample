@@ -57,24 +57,15 @@ namespace ServerCore
             _currentIndex = 0;
         }
 
-        public IWizardStep CurrentStep
-        {
-            get { return _steps[_currentIndex]; }
-        }
+        public IWizardStep CurrentStep => _steps[_currentIndex];
 
         public IEnumerable<IWizardStep> GetSteps()
         {
             return _steps;
         }
 
-        private bool CanGoForward
-        {
-            get { return _currentIndex < _steps.Count - 1; }
-        }
+        private bool CanGoForward => _currentIndex < _steps.Count - 1;
 
-        private bool CanGoBack
-        {
-            get { return _currentIndex > 0; }
-        }
+        private bool CanGoBack => _currentIndex > 0;
     }
 }

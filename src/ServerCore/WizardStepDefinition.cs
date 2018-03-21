@@ -10,12 +10,12 @@
             Order = order;
         }
 
-        public string Id { get; private set; }
+        public string Id { get; }
 
-        public string Title { get; private set; }
+        public string Title { get; }
 
-        public string ControlName { get; private set; }
+        public string ControlName { get; }
 
-        public int Order { get; private set; }
+        public int Order { get; }
     }
 }

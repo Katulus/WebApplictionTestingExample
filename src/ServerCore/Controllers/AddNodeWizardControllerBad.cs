@@ -5,6 +5,7 @@ using System.Linq;
 using System.Xml.Linq;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using ServerCore.DAL;
 using ServerCore.Models;
 using ServerCore.WizardSteps;
@@ -88,7 +89,8 @@ namespace ServerCore.Controllers
                     throw new InvalidNodeException();
 
                 // This can't be unit tested, there is no way how to not use database
-                NodeDAL dal = new NodeDAL(new ServerDbContext(null));
+                var dbOptions = new DbContextOptionsBuilder<ServerDbContext>().UseInMemoryDatabase("TestDatabase").Options;
+                NodeDAL dal = new NodeDAL(new ServerDbContext(dbOptions));
                 dal.AddNode(node);
                 foreach (IAddNodePlugin plugin in GetPlugins())
                 {
@@ -142,8 +144,7 @@ namespace ServerCore.Controllers
                         continue;
                     }
                     // Creating plugins instances? Why should controller know anything about that?
-                    IAddNodePlugin plugin = Activator.CreateInstance(pluginType) as IAddNodePlugin;
-                    if (plugin == null)
+                    if (!(Activator.CreateInstance(pluginType) is IAddNodePlugin plugin))
                     {
                         // log ...
                         continue;
@@ -203,15 +204,9 @@ namespace ServerCore.Controllers
             return node.Id == 0;
         }
 
-        private bool CanGoForward
-        {
-            get { return _currentIndex < _steps.Count - 1; }
-        }
+        private bool CanGoForward => _currentIndex < _steps.Count - 1;
 
-        private bool CanGoBack
-        {
-            get { return _currentIndex > 0; }
-        }
+        private bool CanGoBack => _currentIndex > 0;
 
         private class PluginDefinition
         {

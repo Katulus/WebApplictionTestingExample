@@ -20,11 +20,9 @@ namespace ServerCore
         {
             if (configuration == null)
                 throw new ArgumentNullException(nameof(configuration));
-            if (dateTimeProvider == null)
-                throw new ArgumentNullException(nameof(dateTimeProvider));
 
             _maxCacheLifetime = configuration.CacheLifetime;
-            _dateTimeProvider = dateTimeProvider;
+            _dateTimeProvider = dateTimeProvider ?? throw new ArgumentNullException(nameof(dateTimeProvider));
         }
 
         public void SetData(T data)
@@ -47,9 +45,6 @@ namespace ServerCore
             return true;
         }
 
-        private bool IsExpired
-        {
-            get { return _dateTimeProvider.UtcNow - _dataCreationDateTime > _maxCacheLifetime; }
-        }
+        private bool IsExpired => _dateTimeProvider.UtcNow - _dataCreationDateTime > _maxCacheLifetime;
     }
 }

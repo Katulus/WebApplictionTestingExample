@@ -7,11 +7,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{B221A64D
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server", "Server\Server.csproj", "{AB9722C5-1CA0-49D1-B62E-8AD7A939EC6F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerTests", "ServerTests\ServerTests.csproj", "{A8A30860-C442-490C-8A78-14EEFE8660A3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerTests", "tests\ServerTests\ServerTests.csproj", "{A8A30860-C442-490C-8A78-14EEFE8660A3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client", "Client\Client.csproj", "{70E15E85-2BB4-4202-B5BE-B428B23BC5A6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EndToEndApiTests", "EndToEndApiTests\EndToEndApiTests.csproj", "{CA111028-CBDA-4857-9D01-0DEDD19BB1DE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EndToEndApiTests", "tests\EndToEndApiTests\EndToEndApiTests.csproj", "{CA111028-CBDA-4857-9D01-0DEDD19BB1DE}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{61472A02-1376-4E0E-B610-AF56B7860E7B}"
 	ProjectSection(SolutionItems) = preProject
@@ -22,9 +22,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClientCore", "ClientCore\Cl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServerCore", "ServerCore\ServerCore.csproj", "{B476AAA4-1D46-4317-B406-A51650242D23}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerCoreTests", "ServerCoreTests\ServerCoreTests.csproj", "{A1370B32-C71A-43F5-8A2E-9A404E825450}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServerCoreTests", "tests\ServerCoreTests\ServerCoreTests.csproj", "{A1370B32-C71A-43F5-8A2E-9A404E825450}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EndToEndApiCoreTests", "EndToEndApiCoreTests\EndToEndApiCoreTests.csproj", "{AE473122-5A17-4874-8251-34E87619392A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EndToEndApiCoreTests", "tests\EndToEndApiCoreTests\EndToEndApiCoreTests.csproj", "{AE473122-5A17-4874-8251-34E87619392A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

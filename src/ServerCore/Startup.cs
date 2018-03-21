@@ -11,7 +11,6 @@ namespace ServerCore
 {
     public class Startup : IStartup
     {
-        // This method gets called by the runtime. Use this method to add services to the container.
         public virtual IServiceProvider ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
@@ -22,7 +21,7 @@ namespace ServerCore
                     .AllowAnyHeader();
             }));
 
-            // Register the Swagger generator, defining one or more Swagger documents
+            // Register the Swagger generator
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new Info { Title = "Server API", Version = "v1" });
@@ -43,16 +42,13 @@ namespace ServerCore
             return services.BuildServiceProvider();
         }
 
-        
-
         private void AddDatabase(IServiceCollection services)
         {
             services.AddDbContext<ServerDbContext>(
                 options =>
                 {
-                    options.ConfigureWarnings(
-                        warnings => warnings.Throw(RelationalEventId.QueryClientEvaluationWarning));
                     options.UseInMemoryDatabase("TestDatabase");
+                    //options.UseSqlServer("... connection string ...");
                 }, ServiceLifetime.Singleton);
             services.AddSingleton<IServerDbContext, ServerDbContext>();
         }

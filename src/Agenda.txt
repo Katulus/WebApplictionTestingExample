@@ -1,0 +1,42 @@
+Server project:
+	- Show application and what it does
+	- Show wrong solution – AddNodeWizardControllerBad
+		- Steps hardcoded in wizard
+		- NodeDAL
+		- Caching - DateTime not testable
+		- Creating plugins
+		- Reading and parsing files
+	- Show correct AddNodeWizard controller
+		- Dependency injection - describe what it is, why it's good.
+		- Tests – unit, Http, mocking, describe Moq
+		- E2E API tests
+	- NodeService
+	- NodeDAL 
+		- Entity Framework
+		- Testing, Effort
+	- NodePluginProvider
+		- IConfigurationProvider - abstracts configuration access
+		- IFileContentProvider - abstracts files access
+		- ICache - Time-related unit testing
+
+Client:
+	- Mention TypeScript – why, benefits.
+	- Show AngluarJS application – app.ts, directives
+	- Index.html
+    - IndexController
+		- NodesService - why to use services and not $http directly
+		- Controller Tests
+		- NodesServiceTest - testing $http
+	- ? Wizard.html
+    - ? WizardController
+		- Tests
+	- DefineNodeWizardStep view
+		- How important is no logic in view for testability
+	- RUN TESTS in browser and in Karma
+	- BREAK SOME TEST, show debug in browser and in Karma
+	- E2E tests
+		- Page object pattern, benefits.
+	- Running tests – Protractor
+
+Don't forget SolarWinds slide
+
