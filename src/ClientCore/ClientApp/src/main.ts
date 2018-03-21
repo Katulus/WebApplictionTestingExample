@@ -10,7 +10,7 @@ export function getBaseUrl() {
 
 const providers = [
   { provide: 'BASE_URL', useFactory: getBaseUrl, deps: [] },
-  { provide: 'BASE_API_URL', useValue: 'http://localhost:63599', deps: [] }
+  { provide: 'BASE_API_URL', useValue: 'http://localhost:5000', deps: [] }
 ];
 
 if (environment.production) {

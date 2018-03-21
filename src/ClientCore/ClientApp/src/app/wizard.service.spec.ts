@@ -12,7 +12,10 @@ describe('WizardService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      providers: [WizardService]
+      providers: [
+        WizardService,
+        { provide: 'BASE_API_URL', useValue: 'http://localhost:5000', deps: [] }
+      ]
     });
 
     injector = getTestBed();

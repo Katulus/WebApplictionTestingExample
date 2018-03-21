@@ -1,8 +1,6 @@
 import { AppPage } from './app.po';
 import { browser } from 'protractor';
-import { DefineNodeWizardStepComponentPage } from './define-node-wizard-step.po';
 import { HomeComponentPage } from './home.po';
-
 
 // to make tests progress visible
 const sleepDuration = 1000;

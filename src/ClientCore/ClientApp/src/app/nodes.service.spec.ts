@@ -10,7 +10,9 @@ describe('NodesService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      providers: [NodesService]
+      providers: [
+        NodesService,
+        { provide: 'BASE_API_URL', useValue: 'http://localhost:5000', deps: [] }]
     });
 
     injector = getTestBed();

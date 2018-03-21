@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json.Serialization;
 using ServerCore.DAL;
 using Swashbuckle.AspNetCore.Swagger;
 
@@ -13,13 +14,15 @@ namespace ServerCore
     {
         public virtual IServiceProvider ConfigureServices(IServiceCollection services)
         {
-            services.AddMvc();
             services.AddCors(o => o.AddPolicy("EnableCors", builder =>
             {
                 builder.AllowAnyOrigin()
                     .AllowAnyMethod()
-                    .AllowAnyHeader();
+                    .AllowAnyHeader()
+                    .AllowCredentials();
             }));
+            services.AddMvc()
+                .AddJsonOptions(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver());
 
             // Register the Swagger generator
             services.AddSwaggerGen(c =>
@@ -61,8 +64,8 @@ namespace ServerCore
                 app.UseDeveloperExceptionPage();
             }
 
-            app.UseMvc();
             app.UseCors("EnableCors");
+            app.UseMvc();
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
