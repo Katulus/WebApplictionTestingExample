@@ -1,26 +1,24 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using System.Web.Http.Results;
+using FluentAssertions;
+using Microsoft.AspNetCore.Mvc;
 using Moq;
-using NUnit.Framework;
 using Server;
 using Server.Controllers;
 using Server.Models;
+using Xunit;
 
 namespace ServerTests.Controllers
 {
-    [TestFixture]
     public class AddNodeWizardControllerTest : ControllerTestBase
     {
-        private Mock<IWizardSession> _sessionMock;
-        private Mock<INodeService> _nodeServiceMock;
-        private Mock<IWizardStep> _step1Mock;
-        private Mock<IWizardStep> _step2Mock;
-        private Mock<IWizardStep> _step3Mock;
-        private AddNodeWizardController _controller;
+        private readonly Mock<IWizardSession> _sessionMock;
+        private readonly Mock<INodeService> _nodeServiceMock;
+        private readonly Mock<IWizardStep> _step1Mock;
+        private readonly Mock<IWizardStep> _step2Mock;
+        private readonly Mock<IWizardStep> _step3Mock;
+        private readonly AddNodeWizardController _controller;
 
-        [SetUp]
-        public void SetUp()
+        public AddNodeWizardControllerTest()
         {
             _sessionMock = new Mock<IWizardSession>();
             _nodeServiceMock = new Mock<INodeService>();
@@ -35,7 +33,7 @@ namespace ServerTests.Controllers
             _controller = new AddNodeWizardController(_sessionMock.Object, _nodeServiceMock.Object);
         }
 
-        [Test]
+        [Fact]
         public void GetStepsReturnsStepsFromSession()
         {
             _sessionMock.Setup(x => x.GetSteps())
@@ -43,15 +41,26 @@ namespace ServerTests.Controllers
 
             var actionResult = _controller.GetSteps();
 
-            var response = AssertResponseOfType<OkNegotiatedContentResult<IEnumerable<WizardStepDefinition>>>(actionResult);
+            actionResult.Should().BeOfType<OkObjectResult>()
+                .Which.Value.Should().BeAssignableTo<IEnumerable<WizardStepDefinition>>()
+                .Which.Should().BeEquivalentTo(new[]
+                    {
+                        new {Id = "Step1"},
+                        new {Id = "Step2"},
+                        new {Id = "Step3"}
+                    },
+                    options => options.ExcludingMissingMembers().WithStrictOrdering());
 
-            Assert.That(response.Content.Count(), Is.EqualTo(3), "Wrong number of steps returned");
-            Assert.That(response.Content.ElementAt(0).Id, Is.EqualTo("Step1"), "Wrong first step returned");
-            Assert.That(response.Content.ElementAt(1).Id, Is.EqualTo("Step2"), "Wrong second step returned");
-            Assert.That(response.Content.ElementAt(2).Id, Is.EqualTo("Step3"), "Wrong third step returned");
+            // TODO: Show
+            //var response = AssertResponseOfType<OkNegotiatedContentResult<IEnumerable<WizardStepDefinition>>>(actionResult);
+
+            //Assert.That(response.Content.Count(), Is.EqualTo(3), "Wrong number of steps returned");
+            //Assert.That(response.Content.ElementAt(0).Id, Is.EqualTo("Step1"), "Wrong first step returned");
+            //Assert.That(response.Content.ElementAt(1).Id, Is.EqualTo("Step2"), "Wrong second step returned");
+            //Assert.That(response.Content.ElementAt(2).Id, Is.EqualTo("Step3"), "Wrong third step returned");
         }
 
-        [Test]
+        [Fact]
         public void NextCallsNextOnWizardSession()
         {
             Node node = new Node();
@@ -60,7 +69,7 @@ namespace ServerTests.Controllers
             _sessionMock.Verify(x => x.Next(node), Times.Once, "Session was not called.");
         }
 
-        [Test]
+        [Fact]
         public void NextReturnsTransitionFromSession()
         {
             _sessionMock.Setup(x => x.Next(It.IsAny<Node>())).Returns(StepTransitionResult.Failure("test"));
@@ -68,12 +77,16 @@ namespace ServerTests.Controllers
             Node node = new Node();
             var actionResult = _controller.Next(node);
 
-            var response = AssertResponseOfType<OkNegotiatedContentResult<StepTransitionResult>>(actionResult);
-            Assert.That(response.Content.CanTransition, Is.False, "Wrong transition result returned.");
-            Assert.That(response.Content.ErrorMessage, Is.EqualTo("test"), "Wrong transition error returned.");
+            actionResult.Should().BeOfType<OkObjectResult>()
+                .Which.Value.Should().BeOfType<StepTransitionResult>()
+                .Which.Should().BeEquivalentTo(new StepTransitionResult
+                {
+                    CanTransition = false,
+                    ErrorMessage = "test"
+                });
         }
 
-        [Test]
+        [Fact]
         public void PreviousCallsPreviousOnWizardSession()
         {
             _controller.Back();
@@ -81,19 +94,23 @@ namespace ServerTests.Controllers
             _sessionMock.Verify(x => x.Back(), Times.Once, "Session was not called.");
         }
 
-        [Test]
+        [Fact]
         public void PreviousReturnsTransitionFromSession()
         {
             _sessionMock.Setup(x => x.Back()).Returns(StepTransitionResult.Failure("test"));
 
             var actionResult = _controller.Back();
 
-            var response = AssertResponseOfType<OkNegotiatedContentResult<StepTransitionResult>>(actionResult);
-            Assert.That(response.Content.CanTransition, Is.False, "Wrong transition result returned.");
-            Assert.That(response.Content.ErrorMessage, Is.EqualTo("test"), "Wrong transition error returned.");
+            actionResult.Should().BeOfType<OkObjectResult>()
+                .Which.Value.Should().BeOfType<StepTransitionResult>()
+                .Which.Should().BeEquivalentTo(new StepTransitionResult
+                {
+                    CanTransition = false,
+                    ErrorMessage = "test"
+                });
         }
 
-        [Test]
+        [Fact]
         public void CancelCallsCancelOnWizardSession()
         {
             _controller.Cancel();
@@ -101,7 +118,7 @@ namespace ServerTests.Controllers
             _sessionMock.Verify(x => x.Cancel(), Times.Once, "Session was not called.");
         }
 
-        [Test]
+        [Fact]
         public void AddNodeCallsNodeService()
         {
             Node node = new Node();

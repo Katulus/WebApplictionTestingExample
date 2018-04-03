@@ -1,29 +1,27 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
-using System.Web.Http.Results;
+using FluentAssertions;
+using Microsoft.AspNetCore.Mvc;
 using Moq;
-using NUnit.Framework;
 using Server;
 using Server.Controllers;
 using Server.Models;
+using Xunit;
 
 namespace ServerTests.Controllers
 {
-    [TestFixture]
     public class NodesControllerTest : ControllerTestBase
     {
-        private Mock<INodeService> _nodeServiceMock;
-        private NodesController _controller;
+        private readonly Mock<INodeService> _nodeServiceMock;
+        private readonly NodesController _controller;
 
-        [SetUp]
-        public void SetUp()
+        public NodesControllerTest()
         {
             _nodeServiceMock = new Mock<INodeService>();
 
             _controller = new NodesController(_nodeServiceMock.Object);
         }
 
-        [Test]
+        [Fact]
         public void GetNodes_ReturnsNodesServiceResult()
         {
             _nodeServiceMock.Setup(x => x.GetNodes())
@@ -35,14 +33,17 @@ namespace ServerTests.Controllers
 
             var actionResult = _controller.GetNodes();
 
-            var response = AssertResponseOfType<OkNegotiatedContentResult<IEnumerable<Node>>>(actionResult);
-
-            Assert.That(response.Content.Count(), Is.EqualTo(2), "Wrong number of nodes returned");
-            Assert.That(response.Content.ElementAt(0).IpOrHostname, Is.EqualTo("1.1.1.1"), "Wrong first node returned");
-            Assert.That(response.Content.ElementAt(1).IpOrHostname, Is.EqualTo("2.2.2.2"), "Wrong second node returned");
+            actionResult.Should().BeOfType<OkObjectResult>()
+                .Which.Value.Should().BeAssignableTo<IEnumerable<Node>>()
+                .Which.Should().BeEquivalentTo(new[]
+                    {
+                        new {IpOrHostname = "1.1.1.1"},
+                        new {IpOrHostname = "2.2.2.2"}
+                    },
+                    options => options.ExcludingMissingMembers().WithStrictOrdering());
         }
 
-        [Test]
+        [Fact]
         public void DeleteAll_CallsNodeService()
         {
             var actionResult = _controller.DeleteAll();

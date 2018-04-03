@@ -1,14 +1,14 @@
-﻿using NUnit.Framework;
+﻿using FluentAssertions;
 using Server;
 using Server.Models;
 using Server.WizardSteps;
+using Xunit;
 
 namespace ServerTests.WizardSteps
 {
-    [TestFixture]
     public class DefineNodeWizardStepTest
     {
-        [Test]
+        [Fact]
         public void DefineNodeWizardStep_WithInvalidAddress_BlocksTransition()
         {
             DefineNodeWizardStep step = new DefineNodeWizardStep();
@@ -16,11 +16,14 @@ namespace ServerTests.WizardSteps
 
             StepTransitionResult result = step.Next(node);
 
-            Assert.That(result.CanTransition, Is.False, "Transition should not be allowed.");
-            Assert.That(result.ErrorMessage, Is.EqualTo("Node address has to be specified."), "Wrong error message was returned.");
+            result.Should().BeEquivalentTo(new StepTransitionResult
+            {
+                CanTransition = false,
+                ErrorMessage = "Node address has to be specified."
+            });
         }
 
-        [Test]
+        [Fact]
         public void DefineNodeWizardStep_WithValidAddress_AllowsTransition()
         {
             DefineNodeWizardStep step = new DefineNodeWizardStep();
@@ -28,18 +31,18 @@ namespace ServerTests.WizardSteps
 
             StepTransitionResult result = step.Next(node);
 
-            Assert.That(result.CanTransition, Is.True, "Transition should be allowed.");
+            result.CanTransition.Should().BeTrue("Transition should be allowed.");
         }
 
-        [Test]
+        [Fact]
         public void DefineNodeWizardStep_MakesAddressUppercase()
         {
             DefineNodeWizardStep step = new DefineNodeWizardStep();
             Node node = new Node { IpOrHostname = "lowerCaseAddress" };
 
-            StepTransitionResult result = step.Next(node);
+            step.Next(node);
 
-            Assert.That(node.IpOrHostname, Is.EqualTo("LOWERCASEADDRESS"), "Node address should be converted to uppercase.");
+            node.IpOrHostname.Should().Be("LOWERCASEADDRESS", "Node address should be converted to uppercase.");
         }
 
         // more tests for more steps

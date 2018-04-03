@@ -1,28 +1,26 @@
 using System;
-using System.Linq;
+using FluentAssertions;
 using Moq;
-using NUnit.Framework;
 using Server;
 using Server.DAL;
 using Server.Models;
+using Xunit;
 
 namespace ServerTests
 {
-    [TestFixture]
     public class NodeServiceTest
     {
         // Mocks for services required by NodeService - we are testing NodeService logic, not underlying classes.
         private Mock<INodeDAL> nodeDalMock;
         private Mock<INodePluginProvider> pluginProviderMock;
 
-        [SetUp]
-        public void SetUp()
+        public NodeServiceTest()
         {
             nodeDalMock = new Mock<INodeDAL>();
             pluginProviderMock = new Mock<INodePluginProvider>();
         }
 
-        [Test]
+        [Fact]
         public void GetNodes_GetsFromDAL()
         {
             NodeService service = new NodeService(nodeDalMock.Object, pluginProviderMock.Object);
@@ -35,10 +33,10 @@ namespace ServerTests
 
             var nodes = service.GetNodes();
 
-            Assert.That(nodes, Is.SameAs(testNodes), "Noded from DAL were not returned");
+            nodes.Should().BeEquivalentTo(testNodes, "Noded from DAL were not returned");
         }
 
-        [Test]
+        [Fact]
         public void AddNode_AddsToDAL()
         {
             NodeService service = new NodeService(nodeDalMock.Object, pluginProviderMock.Object);
@@ -50,7 +48,7 @@ namespace ServerTests
             nodeDalMock.Verify(x => x.AddNode(node), Times.Once(), "Node was not saved to DAL.");
         }
 
-        [Test]
+        [Fact]
         public void AddNode_CallsAllPluginsAfterNodeIsAdded()
         {
             // use helper methods to create test setup
@@ -72,7 +70,7 @@ namespace ServerTests
             plugin3Mock.Verify(x => x.AfterNodeAdded(node), Times.Once(), "Plugin 3 was not called.");
         }
 
-        [Test]
+        [Fact]
         public void AddNode_CallsAllPluginsToValidateNode()
         {
             // use helper methods to create test setup
@@ -93,7 +91,7 @@ namespace ServerTests
             plugin3Mock.Verify(x => x.Validate(node), Times.Once(), "Plugin 3 was not called.");
         }
 
-        [Test]
+        [Fact]
         public void AddNode_ThrowsForInvalidNode()
         {
             NodeService service = new NodeService(nodeDalMock.Object, pluginProviderMock.Object);
@@ -102,7 +100,7 @@ namespace ServerTests
             Assert.Throws<InvalidNodeException>(() => service.AddNode(node));
         }
 
-        [Test]
+        [Fact]
         public void AddNode_DoesNotAddInvalidNode()
         {
             NodeService service = new NodeService(nodeDalMock.Object, pluginProviderMock.Object);
@@ -118,7 +116,7 @@ namespace ServerTests
             nodeDalMock.Verify(x => x.AddNode(node), Times.Never, "Node was saved to database but it should not be.");
         }
 
-        [Test]
+        [Fact]
         public void AddNode_FailedPluginValidation_Throws()
         {
             // this plugin mock says that node is not valid
@@ -131,7 +129,7 @@ namespace ServerTests
             Assert.Throws<InvalidNodeException>(() => service.AddNode(node));
         }
 
-        [Test]
+        [Fact]
         public void AddNode_FailedPluginValidation_DoesNotAddNode()
         {
             // this plugin mock says that node is not valid
@@ -151,7 +149,7 @@ namespace ServerTests
             nodeDalMock.Verify(x => x.AddNode(node), Times.Never, "Node was saved to database but it should not be.");
         }
 
-        [Test]
+        [Fact]
         public void DeleteAll_DeletesViaDAL()
         {
             NodeService service = new NodeService(nodeDalMock.Object, pluginProviderMock.Object);

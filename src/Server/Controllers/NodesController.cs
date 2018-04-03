@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Web.Http;
-using System.Web.Http.Cors;
-using System.Web.Http.Description;
+using Microsoft.AspNetCore.Mvc;
 using Server.Models;
 
 namespace Server.Controllers
 {
-    [EnableCors(origins: "*", headers: "*", methods: "*")]
-    public class NodesController : ApiController
+    public class NodesController : Controller
     {
         private readonly INodeService _nodeService;
 
@@ -19,15 +16,15 @@ namespace Server.Controllers
 
         [HttpGet]
         [Route("nodes")]
-        [ResponseType(typeof(IEnumerable<Node>))]
-        public IHttpActionResult GetNodes()
+        [ProducesResponseType(typeof(IEnumerable<Node>), 200)]
+        public IActionResult GetNodes()
         {
             return Ok(_nodeService.GetNodes());
         }
 
         [HttpPost]
         [Route("deleteAll")]
-        public IHttpActionResult DeleteAll()
+        public IActionResult DeleteAll()
         {
             _nodeService.DeleteAll();
             return Ok();

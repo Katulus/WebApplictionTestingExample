@@ -24,20 +24,15 @@ namespace Server
         {
             if (configuration == null)
                 throw new ArgumentNullException(nameof(configuration));
-            if (filesContentProvider == null)
-                throw new ArgumentNullException(nameof(filesContentProvider));
-            if (cache == null)
-                throw new ArgumentNullException(nameof(cache));
 
             _pluginsPath = configuration.PluginsPath;
-            _filesContentProvider = filesContentProvider;
-            _cache = cache;
+            _filesContentProvider = filesContentProvider ?? throw new ArgumentNullException(nameof(filesContentProvider));
+            _cache = cache ?? throw new ArgumentNullException(nameof(cache));
         }
 
         public IEnumerable<IAddNodePlugin> GetPlugins()
         {
-            List<IAddNodePlugin> plugins;
-            if (!_cache.TryGetData(out plugins))
+            if (!_cache.TryGetData(out var plugins))
             {
                 plugins = GetPluginsInternal();
                 _cache.SetData(plugins);
@@ -61,8 +56,7 @@ namespace Server
                         continue;
                     }
 
-                    IAddNodePlugin plugin = Activator.CreateInstance(pluginType) as IAddNodePlugin;
-                    if (plugin == null)
+                    if (!(Activator.CreateInstance(pluginType) is IAddNodePlugin plugin))
                     {
                         // log ...
                         continue;

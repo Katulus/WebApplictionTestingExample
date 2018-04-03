@@ -1,15 +1,13 @@
-﻿using System.Web.Http;
-using NUnit.Framework;
+﻿using FluentAssertions;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ServerTests.Controllers
 {
     public class ControllerTestBase
     {
-        protected static T AssertResponseOfType<T>(IHttpActionResult response) where T : class
+        protected static T AssertResponseOfType<T>(IActionResult response) where T : class
         {
-            T typedResponse = response as T;
-            Assert.That(typedResponse, Is.Not.Null, "Wrong response type returned - {0} instead of {1}.", response.GetType().Name, typeof(T).Name);
-            return typedResponse;
+            return response.Should().BeOfType<T>("Wrong response type returned - {0} instead of {1}.", response.GetType().Name, typeof(T).Name).Subject;
         }
     }
 }

@@ -1,46 +1,44 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using FluentAssertions;
 using Moq;
-using NUnit.Framework;
 using Server;
 using Server.Models;
+using Xunit;
 
 namespace ServerTests
 {
-    [TestFixture]
-    class NodePluginProviderTest
+    public class NodePluginProviderTest
     {
         private const string PluginsPath = @"c:\plugins";
-        private Mock<IConfigurationProvider> _configurationProviderMock;
-        private Mock<IFilesContentProvider> _filesContentProviderMock;
-        private Mock<ICache<List<IAddNodePlugin>>> _cacheMock;
-        private NodePluginProvider _provider;
+        private readonly Mock<IFilesContentProvider> _filesContentProviderMock;
+        private readonly Mock<ICache<List<IAddNodePlugin>>> _cacheMock;
+        private readonly NodePluginProvider _provider;
 
-        [SetUp]
-        public void SetUp()
+        public NodePluginProviderTest()
         {
             _filesContentProviderMock = new Mock<IFilesContentProvider>();
             _cacheMock = new Mock<ICache<List<IAddNodePlugin>>>();
 
-            _configurationProviderMock = new Mock<IConfigurationProvider>();
-            _configurationProviderMock.SetupGet(x => x.PluginsPath).Returns(PluginsPath);
+            var configurationProviderMock = new Mock<IConfigurationProvider>();
+            configurationProviderMock.SetupGet(x => x.PluginsPath).Returns(PluginsPath);
 
             // setup empty cache
             List<IAddNodePlugin> tmp;
             _cacheMock.Setup(x => x.TryGetData(out tmp)).Returns(false);
 
-            _provider = new NodePluginProvider(_configurationProviderMock.Object, _filesContentProviderMock.Object, _cacheMock.Object);
+            _provider = new NodePluginProvider(configurationProviderMock.Object, _filesContentProviderMock.Object, _cacheMock.Object);
         }
 
-        [Test]
+        [Fact]
         public void GetPlugins_NoPlugins_ReturnsEmptyCollection()
         {
             _filesContentProviderMock.Setup(x => x.GetFilesContent(It.IsAny<string>(), It.IsAny<string>())).Returns(Enumerable.Empty<string>());
 
-            CollectionAssert.IsEmpty(_provider.GetPlugins(), "No plugins should have been returned");
+            _provider.GetPlugins().Should().BeEmpty("No plugins should have been returned");
         }
 
-        [Test]
+        [Fact]
         public void GetPlugins_ReturnsValidPluginsFromFiles()
         {
             _filesContentProviderMock.Setup(x => x.GetFilesContent(It.IsAny<string>(), It.IsAny<string>())).Returns(
@@ -52,13 +50,15 @@ namespace ServerTests
 
             IEnumerable<IAddNodePlugin> plugins = _provider.GetPlugins();
 
+            plugins.Select(x => x.GetType()).Should().BeEquivalentTo(typeof(TestNodePlugin1), typeof(TestNodePlugin2));
+
             // multiple assertions are fine here - they test one thing, that returned plugins are correct
-            Assert.That(plugins.Count(), Is.EqualTo(2), "Wrong number of plugins returned");
-            Assert.That(plugins.Any(x => x.GetType() == typeof(TestNodePlugin1)), Is.True, "TestNodePlugin1 was not returned");
-            Assert.That(plugins.Any(x => x.GetType() == typeof(TestNodePlugin2)), Is.True, "TestNodePlugin2 was not returned");
+            //Assert.Equal(2, plugins.Count());
+            //Assert.True(plugins.Any(x => x.GetType() == typeof(TestNodePlugin1)), "TestNodePlugin1 was not returned");
+            //Assert.True(plugins.Any(x => x.GetType() == typeof(TestNodePlugin2)), "TestNodePlugin2 was not returned");
         }
 
-        [Test]
+        [Fact]
         public void GetPlugins_ReturnsEachPluginJustOnce()
         {
             _filesContentProviderMock.Setup(x => x.GetFilesContent(It.IsAny<string>(), It.IsAny<string>())).Returns(
@@ -70,10 +70,11 @@ namespace ServerTests
 
             IEnumerable<IAddNodePlugin> plugins = _provider.GetPlugins();
 
-            Assert.That(plugins.Count(), Is.EqualTo(1), "Only one plugin should have been returned, other one is duplicate.");
+            plugins.Should().HaveCount(1, "Only one plugin should have been returned, other one is duplicate.");
+            //Assert.Equal(0, plugins.Count());
         }
 
-        [Test]
+        [Fact]
         public void GetPlugins_SkipsInvalidPluginDefinitions()
         {
             _filesContentProviderMock.Setup(x => x.GetFilesContent(It.IsAny<string>(), It.IsAny<string>())).Returns(
@@ -85,11 +86,10 @@ namespace ServerTests
 
             IEnumerable<IAddNodePlugin> plugins = _provider.GetPlugins();
 
-            Assert.That(plugins.Count(), Is.EqualTo(1), "Only one plugin should have been returned, other one is invalid definition.");
-            Assert.That(plugins.Any(x => x.GetType() == typeof(TestNodePlugin1)), Is.True, "TestNodePlugin1 was not returned");
+            plugins.Select(x => x.GetType()).Should().BeEquivalentTo(new [] {typeof(TestNodePlugin1) }, "Only one plugin should have been returned, other one is invalid definition.");
         }
 
-        [Test]
+        [Fact]
         public void GetPlugins_ReturnsPluginsFromCache_IfCacheIsValid()
         {
             // setup populated cache
@@ -98,13 +98,10 @@ namespace ServerTests
 
             IEnumerable<IAddNodePlugin> plugins = _provider.GetPlugins();
 
-            // multiple assertions are fine here - they test one thing, that returned plugins are correct
-            Assert.That(plugins.Count(), Is.EqualTo(2), "Wrong number of plugins returned");
-            Assert.That(plugins.Any(x => x.GetType() == typeof(TestNodePlugin1)), Is.True, "TestNodePlugin1 was not returned");
-            Assert.That(plugins.Any(x => x.GetType() == typeof(TestNodePlugin2)), Is.True, "TestNodePlugin2 was not returned");
+            plugins.Select(x => x.GetType()).Should().BeEquivalentTo(typeof(TestNodePlugin1), typeof(TestNodePlugin2));
         }
 
-        [Test]
+        [Fact]
         public void GetPlugins_DoesNotReadFiles_IfCacheIsValid()
         {
             // setup populated cache

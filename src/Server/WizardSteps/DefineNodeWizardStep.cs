@@ -4,10 +4,7 @@ namespace Server.WizardSteps
 {
     public class DefineNodeWizardStep : IWizardStep
     {
-        public WizardStepDefinition StepDefinition
-        {
-            get { return new WizardStepDefinition("DefineNode", "DefineNodeWizardStep", "Define node", 100); }
-        }
+        public WizardStepDefinition StepDefinition => new WizardStepDefinition("DefineNode", "DefineNodeWizardStep", "Define node", 100);
 
         public StepTransitionResult Next(Node node)
         {

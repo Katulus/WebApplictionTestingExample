@@ -1,46 +1,48 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using NUnit.Framework;
+using FluentAssertions;
+using Microsoft.EntityFrameworkCore;
 using Server.DAL;
 using Server.Models;
+using Xunit;
 
 namespace ServerTests.DAL
 {
-    [TestFixture]
     public class NodeDALTest
     {
-        private NodeDAL _dal;
-        private ServerDbContext _dbContext;
+        private readonly NodeDAL _dal;
+        private readonly ServerDbContext _dbContext;
 
-        [SetUp]
-        public void SetUp()
+        public NodeDALTest()
         {
             // create in-memory DB just for this test
-            _dbContext = new ServerDbContext(Effort.DbConnectionFactory.CreateTransient());
+            var dbOptions = new DbContextOptionsBuilder<ServerDbContext>().UseInMemoryDatabase("UnitTests").Options;
+            _dbContext = new ServerDbContext(dbOptions);
+            _dbContext.Database.EnsureDeleted();
             _dal = new NodeDAL(_dbContext);
         }
 
-        [Test]
+        [Fact]
         public void AddNode_SetsNodeId()
         {
             Node node = new Node { IpOrHostname = "1.2.3.4" };
 
             _dal.AddNode(node);
 
-            Assert.That(node.Id, Is.GreaterThan(0), "Node ID was not set.");
+           node.Id.Should().BeGreaterThan(0, "Node ID was not set.");
         }
 
-        [Test]
+        [Fact]
         public void AddNode_AddsNodeToDatabase()
         {
             Node node = new Node { IpOrHostname = "1.2.3.4" };
 
             _dal.AddNode(node);
 
-            Assert.That(_dbContext.Nodes.Count(), Is.EqualTo(1), "Node was not added");
+            _dbContext.Nodes.Should().HaveCount(1, "Node was not added");
         }
 
-        [Test]
+        [Fact]
         public void GetNodes_ReturnsNodesFromDatabase()
         {
             _dbContext.Nodes.Add(new Node {IpOrHostname = "1.1.1.1"});
@@ -49,12 +51,10 @@ namespace ServerTests.DAL
 
             IEnumerable<Node> nodes = _dal.GetNodes();
 
-            Assert.That(nodes.Count(), Is.EqualTo(2), "Wrong number of nodes returned");
-            Assert.That(nodes.Any(n => n.IpOrHostname == "1.1.1.1"), Is.True, "First node was not returned with proper data");
-            Assert.That(nodes.Any(n => n.IpOrHostname == "2.2.2.2"), Is.True, "Second node was not returned with proper data");
+            nodes.Select(x => x.IpOrHostname).Should().BeEquivalentTo("1.1.1.1", "2.2.2.2");
         }
 
-        [Test]
+        [Fact]
         public void DeleteAll_DeletesAllNodes()
         {
             _dbContext.Nodes.Add(new Node { IpOrHostname = "1.1.1.1" });
@@ -63,8 +63,7 @@ namespace ServerTests.DAL
 
             _dal.DeleteAll();
 
-
-            Assert.That(_dbContext.Nodes.Count(), Is.EqualTo(0), "All nodes were not deleted.");
+           _dbContext.Nodes.Should().BeEmpty("All nodes were not deleted.");
         }
     }
 }

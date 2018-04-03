@@ -37,6 +37,8 @@ Client:
 	- E2E tests
 		- Page object pattern, benefits.
 	- Running tests – Protractor
+	
+Compare old AngularJS solution with new Angular/.NET Core
 
 Don't forget SolarWinds slide
 

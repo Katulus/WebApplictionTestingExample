@@ -2,7 +2,7 @@ using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 
-namespace ServerApiTests
+namespace EndToEndApiTests
 {
     public abstract class ApiTestBase
     {

@@ -1,4 +1,0 @@
-.NET Core 2.0
-
-dotnet new --install Microsoft.DotNet.Web.Spa.ProjectTemplates::2.0.0
-dotnet new angular -o ClientCore
