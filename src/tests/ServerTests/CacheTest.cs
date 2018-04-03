@@ -14,14 +14,14 @@ namespace ServerTests
 
         public CacheTest()
         {
-            var configurationProviderMock = new Mock<IConfigurationProvider>();
-            configurationProviderMock.SetupGet(x => x.CacheLifetime).Returns(_cacheLifeTime);
+            var configuration = new Configuration {CacheLifetime = _cacheLifeTime};
 
             _now = DateTime.UtcNow;
             var dateTimeProvider = new Mock<IDateTimeProvider>();
+            // important to use () => _now, otherwise change of _now won't be reflected in mock
             dateTimeProvider.SetupGet(x => x.UtcNow).Returns(() => _now);
 
-            _cache = new Cache<int>(configurationProviderMock.Object, dateTimeProvider.Object);
+            _cache = new Cache<int>(configuration, dateTimeProvider.Object);
         }
 
         [Fact]

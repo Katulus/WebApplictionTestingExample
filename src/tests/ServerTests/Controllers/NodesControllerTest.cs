@@ -9,7 +9,7 @@ using Xunit;
 
 namespace ServerTests.Controllers
 {
-    public class NodesControllerTest : ControllerTestBase
+    public class NodesControllerTest
     {
         private readonly Mock<INodeService> _nodeServiceMock;
         private readonly NodesController _controller;
@@ -48,7 +48,7 @@ namespace ServerTests.Controllers
         {
             var actionResult = _controller.DeleteAll();
 
-            AssertResponseOfType<OkResult>(actionResult);
+            actionResult.Should().BeOfType<OkResult>();
             _nodeServiceMock.Verify(x => x.DeleteAll(), Times.Once, "Nodes were not deleted");
         }
     }

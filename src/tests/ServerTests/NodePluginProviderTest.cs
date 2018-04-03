@@ -10,7 +10,6 @@ namespace ServerTests
 {
     public class NodePluginProviderTest
     {
-        private const string PluginsPath = @"c:\plugins";
         private readonly Mock<IFilesContentProvider> _filesContentProviderMock;
         private readonly Mock<ICache<List<IAddNodePlugin>>> _cacheMock;
         private readonly NodePluginProvider _provider;
@@ -20,14 +19,13 @@ namespace ServerTests
             _filesContentProviderMock = new Mock<IFilesContentProvider>();
             _cacheMock = new Mock<ICache<List<IAddNodePlugin>>>();
 
-            var configurationProviderMock = new Mock<IConfigurationProvider>();
-            configurationProviderMock.SetupGet(x => x.PluginsPath).Returns(PluginsPath);
+            var configuration = new Configuration { PluginsPath = @"c:\plugins" };
 
             // setup empty cache
             List<IAddNodePlugin> tmp;
             _cacheMock.Setup(x => x.TryGetData(out tmp)).Returns(false);
 
-            _provider = new NodePluginProvider(configurationProviderMock.Object, _filesContentProviderMock.Object, _cacheMock.Object);
+            _provider = new NodePluginProvider(configuration, _filesContentProviderMock.Object, _cacheMock.Object);
         }
 
         [Fact]
@@ -51,11 +49,6 @@ namespace ServerTests
             IEnumerable<IAddNodePlugin> plugins = _provider.GetPlugins();
 
             plugins.Select(x => x.GetType()).Should().BeEquivalentTo(typeof(TestNodePlugin1), typeof(TestNodePlugin2));
-
-            // multiple assertions are fine here - they test one thing, that returned plugins are correct
-            //Assert.Equal(2, plugins.Count());
-            //Assert.True(plugins.Any(x => x.GetType() == typeof(TestNodePlugin1)), "TestNodePlugin1 was not returned");
-            //Assert.True(plugins.Any(x => x.GetType() == typeof(TestNodePlugin2)), "TestNodePlugin2 was not returned");
         }
 
         [Fact]
@@ -71,7 +64,6 @@ namespace ServerTests
             IEnumerable<IAddNodePlugin> plugins = _provider.GetPlugins();
 
             plugins.Should().HaveCount(1, "Only one plugin should have been returned, other one is duplicate.");
-            //Assert.Equal(0, plugins.Count());
         }
 
         [Fact]

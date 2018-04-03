@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -9,13 +10,10 @@ using Xunit;
 
 namespace ServerTests.Controllers
 {
-    public class AddNodeWizardControllerTest : ControllerTestBase
+    public class AddNodeWizardControllerTest
     {
         private readonly Mock<IWizardSession> _sessionMock;
         private readonly Mock<INodeService> _nodeServiceMock;
-        private readonly Mock<IWizardStep> _step1Mock;
-        private readonly Mock<IWizardStep> _step2Mock;
-        private readonly Mock<IWizardStep> _step3Mock;
         private readonly AddNodeWizardController _controller;
 
         public AddNodeWizardControllerTest()
@@ -23,21 +21,19 @@ namespace ServerTests.Controllers
             _sessionMock = new Mock<IWizardSession>();
             _nodeServiceMock = new Mock<INodeService>();
 
-            _step1Mock = new Mock<IWizardStep>();
-            _step1Mock.SetupGet(x => x.StepDefinition).Returns(new WizardStepDefinition("Step1", "Step1Control", "Step 1", 1));
-            _step2Mock = new Mock<IWizardStep>();                                     
-            _step2Mock.SetupGet(x => x.StepDefinition).Returns(new WizardStepDefinition("Step2", "Step2Control", "Step 2", 2));
-            _step3Mock = new Mock<IWizardStep>();                                     
-            _step3Mock.SetupGet(x => x.StepDefinition).Returns(new WizardStepDefinition("Step3", "Step3Control", "Step 3", 3));
-
             _controller = new AddNodeWizardController(_sessionMock.Object, _nodeServiceMock.Object);
         }
 
         [Fact]
-        public void GetStepsReturnsStepsFromSession()
+        public void GetSteps_ReturnsStepsFromSession()
         {
             _sessionMock.Setup(x => x.GetSteps())
-                .Returns(new[] {_step1Mock.Object, _step2Mock.Object, _step3Mock.Object});
+                .Returns(new[]
+                {
+                    new TestStep("Step1"),
+                    new TestStep("Step2"),
+                    new TestStep("Step3")
+                });
 
             var actionResult = _controller.GetSteps();
 
@@ -50,18 +46,10 @@ namespace ServerTests.Controllers
                         new {Id = "Step3"}
                     },
                     options => options.ExcludingMissingMembers().WithStrictOrdering());
-
-            // TODO: Show
-            //var response = AssertResponseOfType<OkNegotiatedContentResult<IEnumerable<WizardStepDefinition>>>(actionResult);
-
-            //Assert.That(response.Content.Count(), Is.EqualTo(3), "Wrong number of steps returned");
-            //Assert.That(response.Content.ElementAt(0).Id, Is.EqualTo("Step1"), "Wrong first step returned");
-            //Assert.That(response.Content.ElementAt(1).Id, Is.EqualTo("Step2"), "Wrong second step returned");
-            //Assert.That(response.Content.ElementAt(2).Id, Is.EqualTo("Step3"), "Wrong third step returned");
         }
 
         [Fact]
-        public void NextCallsNextOnWizardSession()
+        public void Next_CallsNextOnWizardSession()
         {
             Node node = new Node();
             _controller.Next(node);
@@ -70,7 +58,7 @@ namespace ServerTests.Controllers
         }
 
         [Fact]
-        public void NextReturnsTransitionFromSession()
+        public void Next_ReturnsTransitionFromSession()
         {
             _sessionMock.Setup(x => x.Next(It.IsAny<Node>())).Returns(StepTransitionResult.Failure("test"));
 
@@ -87,7 +75,7 @@ namespace ServerTests.Controllers
         }
 
         [Fact]
-        public void PreviousCallsPreviousOnWizardSession()
+        public void Previous_CallsPreviousOnWizardSession()
         {
             _controller.Back();
 
@@ -95,7 +83,7 @@ namespace ServerTests.Controllers
         }
 
         [Fact]
-        public void PreviousReturnsTransitionFromSession()
+        public void Previous_ReturnsTransitionFromSession()
         {
             _sessionMock.Setup(x => x.Back()).Returns(StepTransitionResult.Failure("test"));
 
@@ -111,7 +99,7 @@ namespace ServerTests.Controllers
         }
 
         [Fact]
-        public void CancelCallsCancelOnWizardSession()
+        public void Cancel_CallsCancelOnWizardSession()
         {
             _controller.Cancel();
 
@@ -119,12 +107,35 @@ namespace ServerTests.Controllers
         }
 
         [Fact]
-        public void AddNodeCallsNodeService()
+        public void AddNode_CallsNodeService()
         {
             Node node = new Node();
             _controller.AddNode(node);
 
             _nodeServiceMock.Verify(x => x.AddNode(node), Times.Once, "Node service was not called.");
         }
+
+        private class TestStep : IWizardStep
+        {
+            public TestStep(string id)
+            {
+                StepDefinition = new WizardStepDefinition(id, id + "Control", id, 1);
+            }
+
+            public WizardStepDefinition StepDefinition { get; }
+
+            public StepTransitionResult Next(Node node)
+            {
+                return StepTransitionResult.Success();
+            }
+        }
+
+        //var okResult = actionResult as OkObjectResult;
+        //Assert.NotNull(okResult);
+        //var steps = okResult.Value as IEnumerable<WizardStepDefinition>;
+        //Assert.NotNull(steps);
+        //Assert.Equal("Step1", steps.ElementAt(0).Id);
+        //Assert.Equal("Step2", steps.ElementAt(1).Id);
+        //Assert.Equal("Step3", steps.ElementAt(2).Id);
     }
 }

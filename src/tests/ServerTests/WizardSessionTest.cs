@@ -29,7 +29,7 @@ namespace ServerTests
 
             _session = new WizardSession(_stepsProviderMock.Object);
             // Session is using static fields to keep state for purpose of this example so we need to clear it.
-            // Preduction code would use different way of keeping the state like real Session, special token etc.
+            // Production code would use different way of keeping the state like real Session, special token etc.
             _session.Cancel(); 
         }
 
@@ -78,8 +78,6 @@ namespace ServerTests
                 CanTransition = false,
                 ErrorMessage = "test"
             });
-            //Assert.False(result.CanTransition, "Should return failed transition.");
-            //Assert.Equal("test", result.ErrorMessage);
         }
 
         [Fact]

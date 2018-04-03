@@ -31,17 +31,22 @@ namespace Server
 
             AddDatabase(services);
 
+            AddServices(services);
+
+            return services.BuildServiceProvider();
+        }
+
+        private static void AddServices(IServiceCollection services)
+        {
             services.AddSingleton<INodeDAL, NodeDAL>();
             services.AddSingleton<INodePluginProvider, NodePluginProvider>();
             services.AddSingleton<IWizardSession, WizardSession>();
             services.AddSingleton<IWizardStepsProvider, WizardStepsProvider>();
             services.AddSingleton<INodeService, NodeService>();
             services.AddSingleton<IFilesContentProvider, FilesContentProvider>();
-            services.AddSingleton<IConfigurationProvider, ConfigurationProvider>();
+            services.AddSingleton<Configuration>();
             services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
             services.AddSingleton(typeof(ICache<>), typeof(Cache<>));
-
-            return services.BuildServiceProvider();
         }
 
         private void AddDatabase(IServiceCollection services)

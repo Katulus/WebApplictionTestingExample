@@ -11,19 +11,16 @@ namespace EndToEndApiTests
 {
     public class AddNodeWizardApiTest : ApiTestBase
     {
-        // Set to URL of running application server instance
-        private const string BaseUrl = "http://localhost:5000";
-
         public AddNodeWizardApiTest()
         {
             // reset the wizard
-            Post(BaseUrl + "/wizard/cancel", string.Empty);
+            Post("/wizard/cancel", string.Empty);
         }
 
         [Fact]
         public async Task GetSteps_ReturnsSteps()
         {
-            HttpWebResponse response = Get(BaseUrl + "/wizard/steps");
+            HttpWebResponse response = Get("/wizard/steps");
 
             string responseData = await GetResponseData(response);
             var stepDefinitions = JsonConvert.DeserializeObject<IEnumerable<WizardStepDefinition>>(responseData);
@@ -40,7 +37,7 @@ namespace EndToEndApiTests
         {
             Node node = new Node() { IpOrHostname = "1.2.3.4", PollingMethod = "ICMP" };
 
-            HttpWebResponse response = Post(BaseUrl + "/wizard/add", JsonConvert.SerializeObject(node));
+            HttpWebResponse response = Post("/wizard/add", JsonConvert.SerializeObject(node));
 
             // Now check if the node was really added. It can be done for example via some other API call (which is not present in this sample).
 
@@ -54,7 +51,7 @@ namespace EndToEndApiTests
             Node node = new Node() { IpOrHostname = "1.2.3.4", PollingMethod = "ICMP" };
 
             // first step
-            HttpWebResponse response = Post(BaseUrl + "/wizard/next", JsonConvert.SerializeObject(node));
+            HttpWebResponse response = Post("/wizard/next", JsonConvert.SerializeObject(node));
             string responseData = await GetResponseData(response);
             StepTransitionResult transitionResult = JsonConvert.DeserializeObject<StepTransitionResult>(responseData);
 
@@ -67,7 +64,7 @@ namespace EndToEndApiTests
             Node node = new Node() { IpOrHostname = "", PollingMethod = "ICMP" };
 
             // first step
-            HttpWebResponse response = Post(BaseUrl + "/wizard/next", JsonConvert.SerializeObject(node));
+            HttpWebResponse response = Post("/wizard/next", JsonConvert.SerializeObject(node));
             string responseData = await GetResponseData(response);
             StepTransitionResult transitionResult = JsonConvert.DeserializeObject<StepTransitionResult>(responseData);
 
@@ -84,9 +81,9 @@ namespace EndToEndApiTests
             Node node = new Node() { IpOrHostname = "1.2.3.4", PollingMethod = "ICMP" };
 
             // first step
-            Post(BaseUrl + "/wizard/next", JsonConvert.SerializeObject(node));
+            Post("/wizard/next", JsonConvert.SerializeObject(node));
             // second step - the last
-            HttpWebResponse response = Post(BaseUrl + "/wizard/next", JsonConvert.SerializeObject(node));
+            HttpWebResponse response = Post("/wizard/next", JsonConvert.SerializeObject(node));
 
             string responseData = await GetResponseData(response);
             StepTransitionResult transitionResult = JsonConvert.DeserializeObject<StepTransitionResult>(responseData);

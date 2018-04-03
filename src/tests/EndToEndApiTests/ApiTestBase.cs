@@ -6,9 +6,12 @@ namespace EndToEndApiTests
 {
     public abstract class ApiTestBase
     {
+        // Set to URL of running application server instance
+        private const string BaseUrl = "http://localhost:5000";
+
         protected HttpWebResponse Post(string url, string data)
         {
-            HttpWebRequest request = WebRequest.CreateHttp(url);
+            HttpWebRequest request = WebRequest.CreateHttp(BaseUrl + url);
             request.Method = "POST";
             request.ContentType = "application/json";
 
@@ -23,7 +26,7 @@ namespace EndToEndApiTests
 
         protected HttpWebResponse Get(string url)
         {
-            HttpWebRequest request = WebRequest.CreateHttp(url);
+            HttpWebRequest request = WebRequest.CreateHttp(BaseUrl + url);
             return (HttpWebResponse)request.GetResponse();
         }
 

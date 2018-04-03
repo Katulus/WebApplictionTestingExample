@@ -1,12 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import { Node, PollingMethod } from '../../models';
+import { Component } from '@angular/core';
+import { Node, PollingMethod, IWizardStep } from '../../models';
 
 @Component({
   selector: 'app-define-node-wizard-step',
   templateUrl: './define-node-wizard-step.component.html',
   styleUrls: ['./define-node-wizard-step.component.css']
 })
-export class DefineNodeWizardStepComponent {
+export class DefineNodeWizardStepComponent implements IWizardStep {
   public node: Node = new Node();
 
   public ipAddressOrHostnameIsValid = true;
@@ -33,6 +33,7 @@ export class DefineNodeWizardStepComponent {
     return this.ipAddressOrHostnameIsValid
       && this.credentialsAreValid;
   }
+
   private validateIpOrHostname() {
     if (!this.node.IpOrHostname) {
       this.ipAddressOrHostnameIsValid = false;
@@ -98,7 +99,6 @@ export class DefineNodeWizardStepComponent {
   }
 
   // This method is called when radiobutton for node type is changed to refresh UI flags.
-  // We could use $scope.watch(...) on this.node.Type as well but this is easier to test.
   public nodeTypeChanged(): void {
     this.showSnmpCredentials = this.node.PollingMethod === PollingMethod.SNMP;
     this.showWmiCredentials = this.node.PollingMethod === PollingMethod.WMI;

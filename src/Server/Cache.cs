@@ -14,9 +14,9 @@ namespace Server
         private readonly IDateTimeProvider _dateTimeProvider;
         private DateTime _dataCreationDateTime;
         private T _data;
-        private bool _dataSet = false;
+        private bool _dataSet;
 
-        public Cache(IConfigurationProvider configuration, IDateTimeProvider dateTimeProvider)
+        public Cache(Configuration configuration, IDateTimeProvider dateTimeProvider)
         {
             if (configuration == null)
                 throw new ArgumentNullException(nameof(configuration));

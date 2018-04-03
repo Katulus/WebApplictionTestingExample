@@ -20,7 +20,7 @@ namespace Server
 
         // Abstracting IFilesContentProvider allows easier unit testing and we can for example move 
         // plugins from filesystem to DB without touching this class
-        public NodePluginProvider(IConfigurationProvider configuration, IFilesContentProvider filesContentProvider, ICache<List<IAddNodePlugin>> cache)
+        public NodePluginProvider(Configuration configuration, IFilesContentProvider filesContentProvider, ICache<List<IAddNodePlugin>> cache)
         {
             if (configuration == null)
                 throw new ArgumentNullException(nameof(configuration));
@@ -109,7 +109,7 @@ namespace Server
                 TypeName = typeName;
             }
 
-            public string Id { get; }
+            private string Id { get; }
 
             public string TypeName { get; }
 

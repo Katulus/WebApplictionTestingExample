@@ -33,7 +33,6 @@ namespace Server.DAL
 
             _dbContext.Nodes.Add(node);
             _dbContext.SaveChanges();
-            
         }
 
         public void DeleteAll()

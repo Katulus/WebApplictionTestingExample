@@ -7,16 +7,15 @@ using Xunit;
 
 namespace ServerTests
 {
-    // this test fixture is using real file system
+    // this test fixture is using real filesystem
     public class FilesContentProviderTest : IDisposable
     {
-        private const string TestDirectoryName = "AddNodeWizardTestDirectory";
         private readonly string _path;
         private readonly FilesContentProvider _provider;
 
         public FilesContentProviderTest()
         {
-            _path = Path.Combine(Path.GetTempPath(), TestDirectoryName);
+            _path = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
             Directory.CreateDirectory(_path);
 
             _provider = new FilesContentProvider();
@@ -24,8 +23,15 @@ namespace ServerTests
 
         public void Dispose()
         {
-            // clear test plugin files created during test if there are any
-            Directory.Delete(Path.Combine(Path.GetTempPath(), TestDirectoryName), true);
+            try
+            {
+                // clear test plugin files created during test if there are any
+                Directory.Delete(_path, true);
+            }
+            catch
+            {
+                // not much we can do here
+            }
         }
 
         [Fact]
@@ -50,13 +56,6 @@ namespace ServerTests
             IEnumerable<string> result = _provider.GetFilesContent(_path, searchPattern);
 
             result.Should().BeEquivalentTo(expectedResults);
-            
-            // TODO: Complex assertion without FluentAssertions library
-            //Assert.Equal(result.Count(), expectedResults.Length);
-            //foreach (string expectedResult in expectedResults)
-            //{
-            //    Assert.True(result.Any(x => x == expectedResult), $"{expectedResult} content was not returned");
-            //}
         }
 
         private void CreateTestFiles(params string[] fileNames)
@@ -71,7 +70,7 @@ namespace ServerTests
         {
             get
             {
-                // TODO: Show NUnit TestCaseData - much nicer than this
+                // TODO: Show NUnit TestCaseData - easier to work with
                 yield return new object[] {
                     new[] {"file1.txt", "file2.txt", "file3.txt"},
                     "*.*",

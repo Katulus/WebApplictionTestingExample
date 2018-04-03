@@ -1,29 +1,74 @@
+- Show application and what it does
+- Show Server project - .NET Core, simple .csproj
+- Show Client project - .NET Core + Angular, HowTo.txt
+
 Server project:
-	- Show application and what it does
 	- Show wrong solution – AddNodeWizardControllerBad
-		- Steps hardcoded in wizard
-		- NodeDAL
-		- Caching - DateTime not testable
-		- Creating plugins
-		- Reading and parsing files
+		- 21: Steps hardcoded in wizard
+		- 27: Static cache to cache data between requests
+		- 55: Keeping track of position in wizard
+		- 95: Direct DB usage
+		- 128: Caching - DateTime not testable
+		- 152: Creating plugin instances
+		- 174: Reading and parsing files
 	- Show correct AddNodeWizard controller
 		- Dependency injection - describe what it is, why it's good.
-		- Tests – unit, Http, mocking, describe Moq
-		- E2E API tests
+		- Show that wizard is not doing anything, it just calls others
 	- NodeService
+		- Wraps node manipulation logic
 	- NodeDAL 
-		- Entity Framework
-		- Testing, Effort
+		- Entity Framework - still good to wrap in DAL		
 	- NodePluginProvider
 		- IConfigurationProvider - abstracts configuration access
 		- IFileContentProvider - abstracts files access
 		- ICache - Time-related unit testing
+	- Cache<T>
+		- abstracted date time
+		- Configuration passed in POCO - easier to extend and manage
+	- Unit tests
+		- Controller
+			- Mocking - Show Moq, how it's used
+			- Fluent Assertions - show what it can do and how it's useful - error message
+			- Show what would it take to write such assertions by hand - commented code down in the file
+		- NodeDAL
+			- In-memory database for EF Core
+		- NodePluginProviderTest
+			- Mock file provider
+			- Mock cache
+		- FilesContentProviderTest
+			- integration test, using real filesystem
+			- Random folder
+			- Cleanup after test
+			- Theory - parametrized test
+			- Use helper methods for repeated or complex setups
+		- CacheTest
+			- testing time-related logic
 
 Client:
-	- Mention TypeScript – why, benefits.
-	- Show AngluarJS application – app.ts, directives
-	- Index.html
-    - IndexController
+	- Show Angluar application 
+		- TypeScript – why, benefits.
+		- How to create - HowTo.txt
+		- Startup.cs - app.UseSpa - serves Angular app, no need for .NET Controller
+    - src/index.html
+		- Angular page
+	- src/app/app.component.ts
+		- entry component
+		- routing -> app.module.ts
+	- src/app/home
+		- list of nodes, show .html
+		- DI of nodes service - app.module.ts -> providers
+	- src/app/nodes.service.ts
+		- DI of http - it's provided by HttpClientModule -> app.module.ts
+		- DI of URL via @Inject
+	- src/app/wizard
+		- wizard component
+		- does everything via wizard service
+	- src/app/wizard-steps/define-node
+		- show .html
+		- mention how important is to not have any logic in template
+		- show .ts, go through logic
+		
+	IndexController
 		- NodesService - why to use services and not $http directly
 		- Controller Tests
 		- NodesServiceTest - testing $http

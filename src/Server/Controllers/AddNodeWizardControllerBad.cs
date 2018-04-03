@@ -14,15 +14,17 @@ namespace Server.Controllers
 {
     [Route("wizardBad")]
     public class AddNodeWizardControllerBad : Controller
-    { 
-        // controller should not care about steps, what they are and how to get them
+    {
+        private const string DbConnectionString =
+            "Server=192.168.0.1;Database=AddNodeWizardDatabase;User Id=AddNodeWizardUser;Password=SuperSecr3tP@ssword;";
+
         private readonly List<IWizardStep> _steps = new List<IWizardStep>
         {
             new DefineNodeWizardStep(),
             new SummaryWizardStep()
         };
+
         private static int _currentIndex;
-        // Controller is created for each request, we need static cache to keep the data
         private static List<IAddNodePlugin> _cache;
         private static DateTime _cacheCreationTime;
 
@@ -62,7 +64,9 @@ namespace Server.Controllers
         public IActionResult Back()
         {
             if (!CanGoBack)
+            {
                 return Ok(StepTransitionResult.Failure("This is the first step"));
+            }
 
             _currentIndex--;
             return Ok(StepTransitionResult.Success());
@@ -88,8 +92,9 @@ namespace Server.Controllers
                 if (!IsNodeValid(node))
                     throw new InvalidNodeException();
 
-                // This can't be unit tested, there is no way how to not use database
-                var dbOptions = new DbContextOptionsBuilder<ServerDbContext>().UseInMemoryDatabase("TestDatabase").Options;
+                var dbOptions = new DbContextOptionsBuilder<ServerDbContext>()
+                    .UseSqlServer(DbConnectionString)
+                    .Options;
                 NodeDAL dal = new NodeDAL(new ServerDbContext(dbOptions));
                 dal.AddNode(node);
                 foreach (IAddNodePlugin plugin in GetPlugins())

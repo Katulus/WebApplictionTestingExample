@@ -8,6 +8,7 @@ using Xunit;
 
 namespace ServerTests.DAL
 {
+    // this is in fact integration test but with performance and cost of unit test
     public class NodeDALTest
     {
         private readonly NodeDAL _dal;
@@ -18,6 +19,7 @@ namespace ServerTests.DAL
             // create in-memory DB just for this test
             var dbOptions = new DbContextOptionsBuilder<ServerDbContext>().UseInMemoryDatabase("UnitTests").Options;
             _dbContext = new ServerDbContext(dbOptions);
+            // this is important, in-mempry DB exists for the whole lifetime of the process
             _dbContext.Database.EnsureDeleted();
             _dal = new NodeDAL(_dbContext);
         }
@@ -29,7 +31,7 @@ namespace ServerTests.DAL
 
             _dal.AddNode(node);
 
-           node.Id.Should().BeGreaterThan(0, "Node ID was not set.");
+            node.Id.Should().BeGreaterThan(0, "Node ID should be set.");
         }
 
         [Fact]
@@ -39,14 +41,14 @@ namespace ServerTests.DAL
 
             _dal.AddNode(node);
 
-            _dbContext.Nodes.Should().HaveCount(1, "Node was not added");
+            _dbContext.Nodes.Should().HaveCount(1, "Node should be added");
         }
 
         [Fact]
         public void GetNodes_ReturnsNodesFromDatabase()
         {
-            _dbContext.Nodes.Add(new Node {IpOrHostname = "1.1.1.1"});
-            _dbContext.Nodes.Add(new Node {IpOrHostname = "2.2.2.2"});
+            _dbContext.Nodes.Add(new Node { IpOrHostname = "1.1.1.1" });
+            _dbContext.Nodes.Add(new Node { IpOrHostname = "2.2.2.2" });
             _dbContext.SaveChanges();
 
             IEnumerable<Node> nodes = _dal.GetNodes();
@@ -63,7 +65,7 @@ namespace ServerTests.DAL
 
             _dal.DeleteAll();
 
-           _dbContext.Nodes.Should().BeEmpty("All nodes were not deleted.");
+            _dbContext.Nodes.Should().BeEmpty("All nodes should be deleted.");
         }
     }
 }
