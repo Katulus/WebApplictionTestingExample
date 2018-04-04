@@ -7,8 +7,8 @@ export class SummaryWizardStepComponentPage {
   private snmpPortElement = element(by.id('snmpPort'));
   private snmpCommunityStringElement = element(by.id('snmpCommunityString'));
 
-  public addNode() {
-    this.addButton.click();
+  public async addNode() {
+    await this.addButton.click();
   }
 
   public getNodeAddress(): promise.Promise<string> {

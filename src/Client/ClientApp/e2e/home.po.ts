@@ -9,13 +9,13 @@ export class HomeComponentPage {
     browser.get('/');
   }
 
-  public addNode(): DefineNodeWizardStepComponentPage {
+  public async addNode(): Promise<DefineNodeWizardStepComponentPage> {
     this._addNodeButton.click();
     return new DefineNodeWizardStepComponentPage();
   }
 
-  public deleteAll() {
-    this._deleteAllButton.click();
+  public async deleteAll() {
+    await this._deleteAllButton.click();
   }
 
   public numberOfNodes(): promise.Promise<number> {

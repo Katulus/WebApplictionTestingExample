@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
@@ -113,21 +112,6 @@ namespace ServerTests.Controllers
             _controller.AddNode(node);
 
             _nodeServiceMock.Verify(x => x.AddNode(node), Times.Once, "Node service was not called.");
-        }
-
-        private class TestStep : IWizardStep
-        {
-            public TestStep(string id)
-            {
-                StepDefinition = new WizardStepDefinition(id, id + "Control", id, 1);
-            }
-
-            public WizardStepDefinition StepDefinition { get; }
-
-            public StepTransitionResult Next(Node node)
-            {
-                return StepTransitionResult.Success();
-            }
         }
 
         //var okResult = actionResult as OkObjectResult;

@@ -27,8 +27,7 @@ describe('HomeComponent', () => {
           provide: NodesService, useValue: nodesServiceMock
         }
       ]
-    })
-      .compileComponents();
+    });
   }));
 
   beforeEach(() => {
@@ -43,7 +42,14 @@ describe('HomeComponent', () => {
 
   it('loads nodes from web service', () => {
     expect(component.nodes.length).toBe(2, 'Wrong number of nodes returned.');
-    expect(component.nodes[0].IpOrHostname).toBe('1.1.1.1');
-    expect(component.nodes[1].IpOrHostname).toBe('2.2.2.2');
+    expect(component.nodes[0].IpOrHostname).toBe('1.1.1.1', 'wrong node 1 IP');
+    expect(component.nodes[1].IpOrHostname).toBe('2.2.2.2', 'wrong node 2 IP');
+  });
+
+  it('displays loaded nodes in the table', () => {
+    let rootElement: HTMLElement = fixture.nativeElement;
+    let tableRows = rootElement.querySelectorAll("table > tbody > tr");
+
+    expect(tableRows.length).toBe(2, 'wrong number of rows in table');
   });
 });

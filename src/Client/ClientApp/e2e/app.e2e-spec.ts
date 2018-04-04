@@ -1,4 +1,3 @@
-import { AppPage } from './app.po';
 import { browser } from 'protractor';
 import { HomeComponentPage } from './home.po';
 
@@ -6,60 +5,59 @@ import { HomeComponentPage } from './home.po';
 const sleepDuration = 1000;
 
 describe('App', () => {
-  let page: AppPage;
-
-  beforeEach(() => {
-    page = new AppPage();
-  });
-
-  it('is able to go through whole wizard and add a node', () => {
+  it('is able to go through whole wizard and add a node', async () => {
     const indexPage = new HomeComponentPage();
-    indexPage.navigate();
-    browser.sleep(sleepDuration);
+    await indexPage.navigate();
+    await browser.sleep(sleepDuration);
 
     // make sure there is no node
-    indexPage.deleteAll();
+    await indexPage.deleteAll();
 
     // click on Add Node button
-    const addNodeStep = indexPage.addNode();
-    browser.sleep(sleepDuration);
+    const addNodeStep = await indexPage.addNode();
+    await browser.sleep(sleepDuration);
 
     // wait until steps are loaded
-    browser.wait(addNodeStep.isLoaded());
-    browser.sleep(sleepDuration);
+    await browser.wait(addNodeStep.isLoaded());
+    await browser.sleep(sleepDuration);
 
     // fill in IP address
-    addNodeStep.setAddress('10.20.30.40');
-    browser.sleep(sleepDuration);
+    await addNodeStep.setAddress('10.20.30.40');
+    await browser.sleep(sleepDuration);
 
     // select SNMP node
-    addNodeStep.setSnmpMethod();
-    browser.sleep(sleepDuration);
+    await addNodeStep.setSnmpMethod();
+    await browser.sleep(sleepDuration);
 
     // select SNMP node
-    addNodeStep.setSnmpMethod();
-    browser.sleep(sleepDuration);
+    await addNodeStep.setSnmpMethod();
+    await browser.sleep(sleepDuration);
 
     // change port
-    addNodeStep.setSnmpPort(123);
-    browser.sleep(sleepDuration);
+    await addNodeStep.setSnmpPort(123);
+    await browser.sleep(sleepDuration);
 
     // change community string
-    addNodeStep.setSnmpCommunityString('testCommunityString');
-    browser.sleep(sleepDuration);
+    await addNodeStep.setSnmpCommunityString('testCommunityString');
+    await browser.sleep(sleepDuration);
 
     // click on Next button to get to summary
-    const summaryStep = addNodeStep.next();
-    browser.sleep(sleepDuration);
+    const summaryStep = await addNodeStep.next();
+    await browser.sleep(sleepDuration);
 
     // check that second step is highlighted as active
     expect(summaryStep.isActive()).toBeTruthy('Second step is not active');
 
+    let nodeAddress = await summaryStep.getNodeAddress();
+    let pollingMethod = await summaryStep.getNodePollingMethod();
+    let snmpPort = await summaryStep.getSnmpPort();
+    let communityString = await summaryStep.getSnmpCommunityString();
+
     // check that summary step shows proper data
-    expect(summaryStep.getNodeAddress()).toBe('10.20.30.40', 'Node address is not correct');
-    expect(summaryStep.getNodePollingMethod()).toBe('SNMP', 'Node polling method is not correct');
-    expect(summaryStep.getSnmpPort()).toBe(123, 'Node SNMP port is not correct');
-    expect(summaryStep.getSnmpCommunityString()).toBe('testCommunityString', 'Node SNMP community string is not correct');
+    expect(nodeAddress).toBe('10.20.30.40', 'Node address is not correct');
+    expect(pollingMethod).toBe('SNMP', 'Node polling method is not correct');
+    expect(snmpPort).toBe(123, 'Node SNMP port is not correct');
+    expect(communityString).toBe('testCommunityString', 'Node SNMP community string is not correct');
 
     // click on Add Node button
     summaryStep.addNode();

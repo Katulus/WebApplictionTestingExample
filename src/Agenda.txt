@@ -43,7 +43,16 @@ Server project:
 			- Use helper methods for repeated or complex setups
 		- CacheTest
 			- testing time-related logic
-
+	- HTTP integration test
+		- Testing controllers through whole WebApi pipeline
+		- TestServer - provided directly by ASP.NET Core - show Nuget
+		- Testing HttpClient
+		- Show custom override of default services via TestStartup
+	- E2E API tests
+		- Show AddNodeWizardApiTest
+			- real requests, real responses
+			- needs running server
+		
 Client:
 	- Show Angluar application 
 		- TypeScript – why, benefits.
@@ -67,23 +76,45 @@ Client:
 		- show .html
 		- mention how important is to not have any logic in template
 		- show .ts, go through logic
-		
-	IndexController
-		- NodesService - why to use services and not $http directly
-		- Controller Tests
-		- NodesServiceTest - testing $http
-	- ? Wizard.html
-    - ? WizardController
-		- Tests
-	- DefineNodeWizardStep view
-		- How important is no logic in view for testability
-	- RUN TESTS in browser and in Karma
-	- BREAK SOME TEST, show debug in browser and in Karma
-	- E2E tests
-		- Page object pattern, benefits.
-	- Running tests – Protractor
-	
-Compare old AngularJS solution with new Angular/.NET Core
+	- Tests
+		- in .specs.ts
+		- run "ng test" for continuous testing
+		- wizard.service.spec.ts
+			- beforeEach - setup testing DI through "providers"
+			- compare with app.module.ts
+			- 'loads steps from web service'
+				- show httpMock
+			- 'calls error handler on error in next()'
+				- show custom error headers
+			- break some test, show debugging in browser
+			- wshow debugging in VS code - - debug - https://github.com/Microsoft/vscode-recipes/tree/master/Angular-CLI#debug-unit-tests
+		- home.component.spec.ts
+			- testing Angular component
+			- ComponentFixture - provides access to component including HTML
+			- custom mock using Jasmine spies
+			- Override NodesService in DI using "useValue"
+			- 'displays loaded nodes in the table'
+				- access component HTML in test
+		- wizard.component.spec.ts
+			- two fake step components 
+			- beforeEach - include test steps in declarations and overrideModule
+			- beforeEach2 - override components mapping in wizard step
+			- 'adds node when addNode() is called'
+				- jasmine spies - .toHaveBeenCalledWith
+		- E2E
+			- ClientApp/e2e
+			- show test, it's again Jasmine
+			- *.po.ts - PageObjects
+				- why? benefits
+				- chaining
+			- running test - without running server, show failure
+			- run server, show success
+			- debug - https://github.com/Microsoft/vscode-recipes/tree/master/Angular-CLI#debug-end-to-end-tests
+				- mention async/await for debugging, remove awaits and show what it does
+
+Bonus:	
+	- Compare old AngularJS solution with new Angular/.NET Core
+	- ReSharper continuous testing
 
 Don't forget SolarWinds slide
 

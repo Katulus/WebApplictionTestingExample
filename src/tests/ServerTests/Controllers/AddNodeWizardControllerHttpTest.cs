@@ -17,8 +17,6 @@ namespace ServerTests.Controllers
     {
         private readonly Mock<IWizardSession> _sessionMock;
         private readonly Mock<INodeService> _nodeServiceMock;
-        private readonly Mock<IWizardStep> _step1Mock;
-        private readonly Mock<IWizardStep> _step2Mock;
 
         public AddNodeWizardControllerHttpTest()
         {
@@ -31,17 +29,16 @@ namespace ServerTests.Controllers
                 s.Replace(new ServiceDescriptor(typeof(IWizardSession), _sessionMock.Object));
                 s.Replace(new ServiceDescriptor(typeof(INodeService), _nodeServiceMock.Object));
             });
-
-            _step1Mock = new Mock<IWizardStep>();
-            _step1Mock.SetupGet(x => x.StepDefinition).Returns(new WizardStepDefinition("Step1", "Step1Control", "Step 1", 1));
-            _step2Mock = new Mock<IWizardStep>();
-            _step2Mock.SetupGet(x => x.StepDefinition).Returns(new WizardStepDefinition("Step2", "Step2Control", "Step 2", 2));
         }
 
         [Fact]
         public async Task GetSteps_ReturnsSteps()
         {
-            _sessionMock.Setup(x => x.GetSteps()).Returns(new[] {_step1Mock.Object, _step2Mock.Object});
+            _sessionMock.Setup(x => x.GetSteps()).Returns(new[]
+            {
+                new TestStep("Step1"),
+                new TestStep("Step2")
+            });
 
             HttpResponseMessage response = await HttpClient.GetAsync("/wizard/steps");
 

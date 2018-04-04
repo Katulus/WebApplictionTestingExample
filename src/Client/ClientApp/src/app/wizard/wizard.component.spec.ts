@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { WizardComponent } from './wizard.component';
 import { WizardService } from '../wizard.service';
-import { Node, WizardStepDefinition, StepTransitionResult } from '../models';
+import { Node, WizardStepDefinition, StepTransitionResult, IWizardStep } from '../models';
 import { RouterTestingModule } from '@angular/router/testing';
 import { BrowserDynamicTestingModule } from '@angular/platform-browser-dynamic/testing';
 import { FormsModule } from '@angular/forms';
@@ -12,7 +12,7 @@ import { WizardStepDirective } from '../wizard-step.directive';
   selector: 'app-test-step1',
   template: ''
 })
-export class TestWizardStep1Component {
+export class TestWizardStep1Component implements IWizardStep {
   public allowNext = true;
   public setNode(node: Node): void {
   }
@@ -24,7 +24,7 @@ export class TestWizardStep1Component {
   selector: 'app-test-step2',
   template: ''
 })
-export class TestWizardStep2Component {
+export class TestWizardStep2Component implements IWizardStep {
   public allowNext = true;
   public setNode(node: Node): void {
   }

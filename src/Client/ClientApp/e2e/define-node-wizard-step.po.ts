@@ -9,36 +9,36 @@ export class DefineNodeWizardStepComponentPage {
   private snmpCommunityString = element(by.name('snmpCommunity'));
   private navigator = element(by.css('.sw-wizard-nav-item'));
 
-  public navigate() {
-    browser.get('/add');
+  public async navigate() {
+    await browser.get('/add');
   }
 
   public isLoaded(): promise.Promise<boolean> {
     return this.navigator.isPresent();
   }
 
-  public next(): SummaryWizardStepComponentPage {
-    this.nextButton.click();
+  public async next(): Promise<SummaryWizardStepComponentPage> {
+    await this.nextButton.click();
     return new SummaryWizardStepComponentPage();
   }
 
-  public setAddress(address: string) {
-    this.addressField.clear();
-    this.addressField.sendKeys(address);
+  public async setAddress(address: string) {
+    await this.addressField.clear();
+    await this.addressField.sendKeys(address);
   }
 
-  public setSnmpMethod() {
-    this.snmpRadio.click();
+  public async setSnmpMethod() {
+    await this.snmpRadio.click();
   }
 
-  public setSnmpPort(port: number) {
-    this.snmpPort.clear();
-    this.snmpPort.sendKeys(port);
+  public async setSnmpPort(port: number) {
+    await this.snmpPort.clear();
+    await this.snmpPort.sendKeys(port);
   }
 
-  public setSnmpCommunityString(communityString: string) {
-    this.snmpCommunityString.clear();
-    this.snmpCommunityString.sendKeys(communityString);
+  public async setSnmpCommunityString(communityString: string) {
+    await this.snmpCommunityString.clear();
+    await this.snmpCommunityString.sendKeys(communityString);
   }
 
   // ... more methods to manipulate other fields, check errors etc.
