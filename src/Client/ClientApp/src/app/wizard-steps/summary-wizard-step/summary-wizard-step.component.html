@@ -1,0 +1,51 @@
+<h4>Summary</h4>
+<div class="row">
+  <div class="col-md-2 sw-bold">IP or hostname:</div>
+  <div class="col-md-10" id="nodeAddress">
+    <span>{{node.IpOrHostname}}</span>
+  </div>
+</div>
+<div class="row">
+  <div class="col-md-2 sw-bold">Polling Method:</div>
+  <div class="col-md-10" id="nodePollingMethod">
+    <span>{{node.PollingMethod}}</span>
+  </div>
+</div>
+
+<!-- show only for SNMP node type -->
+<div *ngIf="node.isSnmp()">
+  <div class="row">
+    <div class="col-md-2 sw-bold">Port:</div>
+    <div class="col-md-10" id="snmpPort">
+      <span>{{node.SnmpCredentials.Port}}</span>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-2 sw-bold">Community string:</div>
+    <div class="col-md-10" id="snmpCommunityString">
+      <span>{{node.SnmpCredentials.CommunityString}}</span>
+    </div>
+  </div>
+</div>
+
+<!-- show only for WMI node type -->
+<div *ngIf="node.isWmi()">
+  <div class="row">
+    <div class="col-md-2 sw-bold">Username:</div>
+    <div class="col-md-10">
+      <span>{{node.WmiCredentials.Username}}</span>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-2 sw-bold">Password:</div>
+    <div class="col-md-10">
+      <span>********</span>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-2 sw-bold">Password confirm:</div>
+    <div class="col-md-10">
+      <span>********</span>
+    </div>
+  </div>
+</div>

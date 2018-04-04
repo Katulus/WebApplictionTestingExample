@@ -2,41 +2,44 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Web.Http;
-using System.Web.Http.Description;
 using System.Xml.Linq;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Server.DAL;
 using Server.Models;
 using Server.WizardSteps;
 
 namespace Server.Controllers
 {
-    [RoutePrefix("wizardBad")]
-    public class AddNodeWizardControllerBad : ApiController
-    { 
-        // controller should not care about steps, what they are and how to get them
+    [Route("wizardBad")]
+    public class AddNodeWizardControllerBad : Controller
+    {
+        private const string DbConnectionString =
+            "Server=192.168.0.1;Database=AddNodeWizardDatabase;User Id=AddNodeWizardUser;Password=SuperSecr3tP@ssword;";
+
         private readonly List<IWizardStep> _steps = new List<IWizardStep>
         {
             new DefineNodeWizardStep(),
             new SummaryWizardStep()
         };
+
         private static int _currentIndex;
-        // Controller is created for each request, we need static cache to keep the data
         private static List<IAddNodePlugin> _cache;
         private static DateTime _cacheCreationTime;
 
         [HttpGet]
         [Route("steps")]
-        [ResponseType(typeof(IEnumerable<WizardStepDefinition>))]
-        public IHttpActionResult GetSteps()
+        [ProducesResponseType(typeof(IEnumerable<WizardStepDefinition>), StatusCodes.Status200OK)]
+        public IActionResult GetSteps()
         {
             return Ok(_steps.Select(x => x.StepDefinition));
         }
 
         [HttpPost]
         [Route("next")]
-        [ResponseType(typeof(StepTransitionResult))]
-        public IHttpActionResult Next(Node node)
+        [ProducesResponseType(typeof(StepTransitionResult), StatusCodes.Status200OK)]
+        public IActionResult Next(Node node)
         {
             if (node == null)
                 throw new ArgumentNullException(nameof(node));
@@ -57,11 +60,13 @@ namespace Server.Controllers
 
         [HttpPost]
         [Route("back")]
-        [ResponseType(typeof(StepTransitionResult))]
-        public IHttpActionResult Back()
+        [ProducesResponseType(typeof(StepTransitionResult), StatusCodes.Status200OK)]
+        public IActionResult Back()
         {
             if (!CanGoBack)
+            {
                 return Ok(StepTransitionResult.Failure("This is the first step"));
+            }
 
             _currentIndex--;
             return Ok(StepTransitionResult.Success());
@@ -69,7 +74,7 @@ namespace Server.Controllers
 
         [HttpPost]
         [Route("cancel")]
-        public IHttpActionResult Cancel()
+        public IActionResult Cancel()
         {
             _currentIndex = 0;
             return Ok();
@@ -77,7 +82,7 @@ namespace Server.Controllers
 
         [HttpPost]
         [Route("add")]
-        public IHttpActionResult AddNode(Node node)
+        public IActionResult AddNode(Node node)
         {
             if (node == null)
                 throw new ArgumentNullException(nameof(node));
@@ -87,8 +92,10 @@ namespace Server.Controllers
                 if (!IsNodeValid(node))
                     throw new InvalidNodeException();
 
-                // This can't be unit tested, there is no way how to not use database
-                NodeDAL dal = new NodeDAL(new ServerDbContext(null));
+                var dbOptions = new DbContextOptionsBuilder<ServerDbContext>()
+                    .UseSqlServer(DbConnectionString)
+                    .Options;
+                NodeDAL dal = new NodeDAL(new ServerDbContext(dbOptions));
                 dal.AddNode(node);
                 foreach (IAddNodePlugin plugin in GetPlugins())
                 {
@@ -100,7 +107,7 @@ namespace Server.Controllers
             }
             catch (Exception ex)
             {
-                return InternalServerError(ex);
+                return  StatusCode(StatusCodes.Status500InternalServerError, ex);
             }
         }
 
@@ -142,8 +149,7 @@ namespace Server.Controllers
                         continue;
                     }
                     // Creating plugins instances? Why should controller know anything about that?
-                    IAddNodePlugin plugin = Activator.CreateInstance(pluginType) as IAddNodePlugin;
-                    if (plugin == null)
+                    if (!(Activator.CreateInstance(pluginType) is IAddNodePlugin plugin))
                     {
                         // log ...
                         continue;
@@ -169,7 +175,7 @@ namespace Server.Controllers
             foreach (string path in pluginPaths)
             {
                 // Reading from files and parsing XML? Not something that controller should do.
-                var pluginXml = File.ReadAllText(path);
+                var pluginXml = System.IO.File.ReadAllText(path);
                 var plugin = ParsePluginDefinition(pluginXml);
                 if (plugin != null)
                 {
@@ -203,15 +209,9 @@ namespace Server.Controllers
             return node.Id == 0;
         }
 
-        private bool CanGoForward
-        {
-            get { return _currentIndex < _steps.Count - 1; }
-        }
+        private bool CanGoForward => _currentIndex < _steps.Count - 1;
 
-        private bool CanGoBack
-        {
-            get { return _currentIndex > 0; }
-        }
+        private bool CanGoBack => _currentIndex > 0;
 
         private class PluginDefinition
         {

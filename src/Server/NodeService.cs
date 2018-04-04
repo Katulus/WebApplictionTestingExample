@@ -19,13 +19,8 @@ namespace Server
 
         public NodeService(INodeDAL dal, INodePluginProvider pluginProvider)
         {
-            if (dal == null)
-                throw new ArgumentNullException(nameof(dal));
-            if (pluginProvider == null)
-                throw new ArgumentNullException(nameof(pluginProvider));
-
-            _dal = dal;
-            _pluginProvider = pluginProvider;
+            _dal = dal ?? throw new ArgumentNullException(nameof(dal));
+            _pluginProvider = pluginProvider ?? throw new ArgumentNullException(nameof(pluginProvider));
         }
 
         public int AddNode(Node node)

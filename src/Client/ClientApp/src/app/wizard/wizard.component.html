@@ -1,0 +1,24 @@
+<h2>Add Node</h2>
+
+<div class="panel panel-default sw-wizard">
+  <div class="panel-heading">
+    <div *ngFor="let step of stepDefinitions; let i = index; let last = last" class="sw-wizard-nav-item" [class.active]="currentStepIndex === i">
+      <span class="sw-label">{{step.Title}}</span> <span *ngIf="!last">/</span>
+    </div>
+    <hr class="sw-clear" />
+  </div>
+  <div class="panel-body">
+    <div class="sw-wizard-step-content">
+      <ng-template appWizardStep></ng-template>
+    </div>
+    <div class="sw-wizard-error-message sw-error-message" ng-show="showError">{{ errorMessage }}</div>
+  </div>
+  <div class="panel-footer">
+    <div class="sw-wizard-button-panel">
+      <button class="btn btn-default" (click)="back()" [disabled]="cantGoBack">Back</button>
+      <button class="btn btn-primary next" (click)="next()" *ngIf="!cantGoForward">Next</button>
+      <button class="btn btn-primary add" (click)="addNode()" *ngIf="cantGoForward">Add node</button>
+      <button class="btn btn-default" (click)="cancel()">Cancel</button>
+    </div>
+  </div>
+</div>

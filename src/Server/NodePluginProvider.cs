@@ -20,24 +20,19 @@ namespace Server
 
         // Abstracting IFilesContentProvider allows easier unit testing and we can for example move 
         // plugins from filesystem to DB without touching this class
-        public NodePluginProvider(IConfigurationProvider configuration, IFilesContentProvider filesContentProvider, ICache<List<IAddNodePlugin>> cache)
+        public NodePluginProvider(Configuration configuration, IFilesContentProvider filesContentProvider, ICache<List<IAddNodePlugin>> cache)
         {
             if (configuration == null)
                 throw new ArgumentNullException(nameof(configuration));
-            if (filesContentProvider == null)
-                throw new ArgumentNullException(nameof(filesContentProvider));
-            if (cache == null)
-                throw new ArgumentNullException(nameof(cache));
 
             _pluginsPath = configuration.PluginsPath;
-            _filesContentProvider = filesContentProvider;
-            _cache = cache;
+            _filesContentProvider = filesContentProvider ?? throw new ArgumentNullException(nameof(filesContentProvider));
+            _cache = cache ?? throw new ArgumentNullException(nameof(cache));
         }
 
         public IEnumerable<IAddNodePlugin> GetPlugins()
         {
-            List<IAddNodePlugin> plugins;
-            if (!_cache.TryGetData(out plugins))
+            if (!_cache.TryGetData(out var plugins))
             {
                 plugins = GetPluginsInternal();
                 _cache.SetData(plugins);
@@ -61,8 +56,7 @@ namespace Server
                         continue;
                     }
 
-                    IAddNodePlugin plugin = Activator.CreateInstance(pluginType) as IAddNodePlugin;
-                    if (plugin == null)
+                    if (!(Activator.CreateInstance(pluginType) is IAddNodePlugin plugin))
                     {
                         // log ...
                         continue;
@@ -115,7 +109,7 @@ namespace Server
                 TypeName = typeName;
             }
 
-            public string Id { get; }
+            private string Id { get; }
 
             public string TypeName { get; }
 

@@ -14,9 +14,9 @@ namespace Server.DAL
 
     public class NodeDAL : INodeDAL
     {
-        private readonly IServerDbContex _dbContext;
+        private readonly IServerDbContext _dbContext;
 
-        public NodeDAL(IServerDbContex dbContext)
+        public NodeDAL(IServerDbContext dbContext)
         {
             _dbContext = dbContext;
         }
@@ -33,7 +33,6 @@ namespace Server.DAL
 
             _dbContext.Nodes.Add(node);
             _dbContext.SaveChanges();
-            
         }
 
         public void DeleteAll()

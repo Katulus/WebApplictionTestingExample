@@ -14,17 +14,15 @@ namespace Server
         private readonly IDateTimeProvider _dateTimeProvider;
         private DateTime _dataCreationDateTime;
         private T _data;
-        private bool _dataSet = false;
+        private bool _dataSet;
 
-        public Cache(IConfigurationProvider configuration, IDateTimeProvider dateTimeProvider)
+        public Cache(Configuration configuration, IDateTimeProvider dateTimeProvider)
         {
             if (configuration == null)
                 throw new ArgumentNullException(nameof(configuration));
-            if (dateTimeProvider == null)
-                throw new ArgumentNullException(nameof(dateTimeProvider));
 
             _maxCacheLifetime = configuration.CacheLifetime;
-            _dateTimeProvider = dateTimeProvider;
+            _dateTimeProvider = dateTimeProvider ?? throw new ArgumentNullException(nameof(dateTimeProvider));
         }
 
         public void SetData(T data)
@@ -47,9 +45,6 @@ namespace Server
             return true;
         }
 
-        private bool IsExpired
-        {
-            get { return _dateTimeProvider.UtcNow - _dataCreationDateTime > _maxCacheLifetime; }
-        }
+        private bool IsExpired => _dateTimeProvider.UtcNow - _dataCreationDateTime > _maxCacheLifetime;
     }
 }

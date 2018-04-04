@@ -1,24 +1,22 @@
-﻿using System.Data.Common;
-using System.Data.Entity;
-using System.Data.Entity.Core.Objects;
+﻿using Microsoft.EntityFrameworkCore;
 using Server.Models;
 
 namespace Server.DAL
 {
-    public interface IServerDbContex
+    public interface IServerDbContext
     {
-        IDbSet<Node> Nodes { get; }
+        DbSet<Node> Nodes { get; }
 
         int SaveChanges();
     }
 
-    public class ServerDbContext : DbContext, IServerDbContex
+    public class ServerDbContext : DbContext, IServerDbContext
     {
-        public ServerDbContext(DbConnection connection)
-            : base(connection, true)
+        public ServerDbContext(DbContextOptions options)
+            : base(options)
         {
         }
 
-        public IDbSet<Node> Nodes { get; set; }
+        public DbSet<Node> Nodes { get; set; }
     }
 }

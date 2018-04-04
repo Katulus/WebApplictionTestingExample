@@ -1,0 +1,22 @@
+.sw-wizard-nav-item span {
+  float: left;
+  padding: 0 0.5em;
+}
+
+.sw-wizard-nav-item.active span.sw-label {
+  color: #428bca;
+  text-decoration: underline;
+}
+
+.sw-wizard-step-content {
+  min-height: 250px;
+}
+
+.sw-wizard-step-content h3 {
+  margin-top: 10px;
+}
+
+.sw-wizard-button-panel {
+  bottom: 0;
+  text-align: right;
+}

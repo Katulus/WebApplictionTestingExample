@@ -1,33 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web.Http;
-using System.Web.Http.Description;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
 using Server.Models;
 
 namespace Server.Controllers
 {
-    [RoutePrefix("wizard")]
-    public class AddNodeWizardController : ApiController
+    [Route("wizard")]
+    public class AddNodeWizardController : Controller
     {
         private readonly IWizardSession _session;
         private readonly INodeService _nodeService;
 
         public AddNodeWizardController(IWizardSession session, INodeService nodeService)
         {
-            if (session == null)
-                throw new ArgumentNullException(nameof(session));
-            if (nodeService == null)
-                throw new ArgumentNullException(nameof(nodeService));
-            _session = session;
-
-            _nodeService = nodeService;
+            _session = session ?? throw new ArgumentNullException(nameof(session));
+            _nodeService = nodeService ?? throw new ArgumentNullException(nameof(nodeService));
         }
 
         [HttpGet]
         [Route("steps")]
-        [ResponseType(typeof(IEnumerable<WizardStepDefinition>))]
-        public IHttpActionResult GetSteps()
+        [ProducesResponseType(typeof(IEnumerable<WizardStepDefinition>), StatusCodes.Status200OK)]
+        public IActionResult GetSteps()
         {
             try
             {
@@ -35,14 +30,14 @@ namespace Server.Controllers
             }
             catch (Exception ex)
             {
-                return InternalServerError(ex);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex);
             }
         }
 
         [HttpPost]
         [Route("next")]
-        [ResponseType(typeof(StepTransitionResult))]
-        public IHttpActionResult Next(Node node)
+        [ProducesResponseType(typeof(StepTransitionResult), StatusCodes.Status200OK)]
+        public IActionResult Next([FromBody] Node node)
         {
             if (node == null)
                 throw new ArgumentNullException(nameof(node));
@@ -52,15 +47,15 @@ namespace Server.Controllers
 
         [HttpPost]
         [Route("back")]
-        [ResponseType(typeof(StepTransitionResult))]
-        public IHttpActionResult Back()
+        [ProducesResponseType(typeof(StepTransitionResult), StatusCodes.Status200OK)]
+        public IActionResult Back()
         {
             return Ok(_session.Back());
         }
 
         [HttpPost]
         [Route("cancel")]
-        public IHttpActionResult Cancel()
+        public IActionResult Cancel()
         {
             _session.Cancel();
             return Ok();
@@ -68,7 +63,7 @@ namespace Server.Controllers
 
         [HttpPost]
         [Route("add")]
-        public IHttpActionResult AddNode(Node node)
+        public IActionResult AddNode([FromBody] Node node)
         {
             if (node == null)
                 throw new ArgumentNullException(nameof(node));
@@ -81,7 +76,7 @@ namespace Server.Controllers
             }
             catch (Exception ex)
             {
-                return InternalServerError(ex);
+                return StatusCode(StatusCodes.Status500InternalServerError, ex);
             }
         }
     }

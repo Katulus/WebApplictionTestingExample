@@ -1,0 +1,27 @@
+/* You can add global styles to this file, and also import other style files */
+.sw-wizard {
+  position: relative;
+}
+.sw-error-message {
+  color: red;
+}
+
+.sw-has-error {
+  background-color: pink;
+}
+
+.sw-wizard-error-message {
+  position: absolute;
+  bottom: 15px;
+}
+
+.sw-clear {
+  height: 0;
+  clear: both;
+  margin: 0;
+  border-width: 0;
+}
+
+.sw-bold {
+  font-weight: bold;
+}

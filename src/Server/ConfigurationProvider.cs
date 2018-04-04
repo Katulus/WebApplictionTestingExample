@@ -2,15 +2,9 @@
 
 namespace Server
 {
-    public interface IConfigurationProvider
+    public class Configuration
     {
-        TimeSpan CacheLifetime { get; }
-        string PluginsPath { get; }
-    }
-
-    public class ConfigurationProvider : IConfigurationProvider
-    {
-        public TimeSpan CacheLifetime => TimeSpan.FromMinutes(5);
-        public string PluginsPath => "Plugins";
+        public TimeSpan CacheLifetime { get; set; } = TimeSpan.FromMinutes(5);
+        public string PluginsPath { get; set; } = "Plugins";
     }
 }

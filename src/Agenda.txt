@@ -1,0 +1,120 @@
+- Show application and what it does
+- Show Server project - .NET Core, simple .csproj
+- Show Client project - .NET Core + Angular, HowTo.txt
+
+Server project:
+	- Show wrong solution – AddNodeWizardControllerBad
+		- 21: Steps hardcoded in wizard
+		- 27: Static cache to cache data between requests
+		- 55: Keeping track of position in wizard
+		- 95: Direct DB usage
+		- 128: Caching - DateTime not testable
+		- 152: Creating plugin instances
+		- 174: Reading and parsing files
+	- Show correct AddNodeWizard controller
+		- Dependency injection - describe what it is, why it's good.
+		- Show that wizard is not doing anything, it just calls others
+	- NodeService
+		- Wraps node manipulation logic
+	- NodeDAL 
+		- Entity Framework - still good to wrap in DAL		
+	- NodePluginProvider
+		- IConfigurationProvider - abstracts configuration access
+		- IFileContentProvider - abstracts files access
+		- ICache - Time-related unit testing
+	- Cache<T>
+		- abstracted date time
+		- Configuration passed in POCO - easier to extend and manage
+	- Unit tests
+		- Controller
+			- Mocking - Show Moq, how it's used
+			- Fluent Assertions - show what it can do and how it's useful - error message
+			- Show what would it take to write such assertions by hand - commented code down in the file
+		- NodeDAL
+			- In-memory database for EF Core
+		- NodePluginProviderTest
+			- Mock file provider
+			- Mock cache
+		- FilesContentProviderTest
+			- integration test, using real filesystem
+			- Random folder
+			- Cleanup after test
+			- Theory - parametrized test
+			- Use helper methods for repeated or complex setups
+		- CacheTest
+			- testing time-related logic
+	- HTTP integration test
+		- Testing controllers through whole WebApi pipeline
+		- TestServer - provided directly by ASP.NET Core - show Nuget
+		- Testing HttpClient
+		- Show custom override of default services via TestStartup
+	- E2E API tests
+		- Show AddNodeWizardApiTest
+			- real requests, real responses
+			- needs running server
+		
+Client:
+	- Show Angluar application 
+		- TypeScript – why, benefits.
+		- How to create - HowTo.txt
+		- Startup.cs - app.UseSpa - serves Angular app, no need for .NET Controller
+    - src/index.html
+		- Angular page
+	- src/app/app.component.ts
+		- entry component
+		- routing -> app.module.ts
+	- src/app/home
+		- list of nodes, show .html
+		- DI of nodes service - app.module.ts -> providers
+	- src/app/nodes.service.ts
+		- DI of http - it's provided by HttpClientModule -> app.module.ts
+		- DI of URL via @Inject
+	- src/app/wizard
+		- wizard component
+		- does everything via wizard service
+	- src/app/wizard-steps/define-node
+		- show .html
+		- mention how important is to not have any logic in template
+		- show .ts, go through logic
+	- Tests
+		- in .specs.ts
+		- run "ng test" for continuous testing
+		- wizard.service.spec.ts
+			- beforeEach - setup testing DI through "providers"
+			- compare with app.module.ts
+			- 'loads steps from web service'
+				- show httpMock
+			- 'calls error handler on error in next()'
+				- show custom error headers
+			- break some test, show debugging in browser
+			- wshow debugging in VS code - - debug - https://github.com/Microsoft/vscode-recipes/tree/master/Angular-CLI#debug-unit-tests
+		- home.component.spec.ts
+			- testing Angular component
+			- ComponentFixture - provides access to component including HTML
+			- custom mock using Jasmine spies
+			- Override NodesService in DI using "useValue"
+			- 'displays loaded nodes in the table'
+				- access component HTML in test
+		- wizard.component.spec.ts
+			- two fake step components 
+			- beforeEach - include test steps in declarations and overrideModule
+			- beforeEach2 - override components mapping in wizard step
+			- 'adds node when addNode() is called'
+				- jasmine spies - .toHaveBeenCalledWith
+		- E2E
+			- ClientApp/e2e
+			- show test, it's again Jasmine
+			- *.po.ts - PageObjects
+				- why? benefits
+				- chaining
+			- running test - without running server, show failure
+			- run server, show success
+			- debug - https://github.com/Microsoft/vscode-recipes/tree/master/Angular-CLI#debug-end-to-end-tests
+				- mention async/await for debugging, remove awaits and show what it does
+
+Bonus:	
+	- Compare old AngularJS solution with new Angular/.NET Core
+	- ReSharper continuous testing
+
+Don't forget SolarWinds slide
+
