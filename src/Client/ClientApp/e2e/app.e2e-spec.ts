@@ -64,7 +64,7 @@ describe('App', () => {
     browser.sleep(sleepDuration);
 
     // check that there is new added node
-    expect(indexPage.numberOfNodes()).toBe(1, 'Node was not added');
-    expect(indexPage.getNodeAddress(0)).toBe('10.20.30.40', 'Node has wrong address');
+    expect(await indexPage.numberOfNodes()).toBe(1, 'Node was not added');
+    expect(await indexPage.getNodeAddress(0)).toBe('10.20.30.40', 'Node has wrong address');
   });
 });

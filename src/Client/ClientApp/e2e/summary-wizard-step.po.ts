@@ -20,7 +20,7 @@ export class SummaryWizardStepComponentPage {
   }
 
   public getSnmpPort(): promise.Promise<number> {
-    return this.snmpPortElement.getText().then(x => Number.parseInt(x));
+    return this.snmpPortElement.getText().then(x => parseInt(x));
   }
 
   public getSnmpCommunityString(): promise.Promise<string> {
