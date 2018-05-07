@@ -13,7 +13,7 @@ module AddNodeWizard {
                 callback(response.data);
             }, (error) => {
                 if (errorCallback) {
-                    errorCallback(error);
+                    errorCallback(error.data);
                 }
             });
         }
@@ -23,7 +23,7 @@ module AddNodeWizard {
                 callback(response.data);
             }, (error) => {
                 if (errorCallback) {
-                    errorCallback(error);
+                    errorCallback(error.data);
                 }
             });
         }

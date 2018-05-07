@@ -9,6 +9,7 @@
         beforeEach(inject((wizardService, _$httpBackend_) => {
             service = wizardService;
             $httpBackend = _$httpBackend_;
+            $httpBackend.whenGET(/Views\//).respond({});
         }));
 
         it("loads steps from web service", inject(($http) => {
