@@ -3,6 +3,7 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Formatting;
+using System.Threading.Tasks;
 using Moq;
 using Newtonsoft.Json;
 using NUnit.Framework;
@@ -38,7 +39,7 @@ namespace ServerTests.Controllers
         }
 
         [Test]
-        public async void GetSteps_ReturnsSteps()
+        public async Task GetSteps_ReturnsSteps()
         {
             _sessionMock.Setup(x => x.GetSteps()).Returns(new[] {_step1Mock.Object, _step2Mock.Object});
 
@@ -54,7 +55,7 @@ namespace ServerTests.Controllers
         }
 
         [Test]
-        public async void Next_MovesToNextInSession()
+        public async Task Next_MovesToNextInSession()
         {
             Node node = new Node { IpOrHostname = "test" };
 
@@ -64,7 +65,7 @@ namespace ServerTests.Controllers
         }
 
         [Test]
-        public async void Next_ReturnsSessionResponse()
+        public async Task Next_ReturnsSessionResponse()
         {
             _sessionMock.Setup(x => x.Next(It.IsAny<Node>())).Returns(StepTransitionResult.Failure("test error"));
             Node node = new Node { IpOrHostname = "test" };
@@ -78,7 +79,7 @@ namespace ServerTests.Controllers
         }
 
         [Test]
-        public async void AddNode_CallsNodeService()
+        public async Task AddNode_CallsNodeService()
         {
             Node node = new Node { IpOrHostname = "test" };
 
