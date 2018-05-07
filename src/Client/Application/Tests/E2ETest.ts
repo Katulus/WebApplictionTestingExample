@@ -3,7 +3,7 @@ import IndexPage = require('./PageObjects/IndexPage');
 import AddNodeStep = require('./PageObjects/AddNodeStep');
 
 // to make tests progress visible
-var sleepDuration = 500;
+var sleepDuration = 1000;
 
 describe('Add Node Wizard end to end test', () => {
     it('should go to next step after clicking on Next button', () => {
