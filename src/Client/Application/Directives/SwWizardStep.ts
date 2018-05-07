@@ -7,8 +7,9 @@
         var controllerName = controlName + 'Controller';
 
         // load and execute script with controller
-        $http.get('/Application/Controls/' + controlName + '/' + controllerName + '.js').success((script) => {
+        $http.get('/Application/Controls/' + controlName + '/' + controllerName + '.js').then((response: IHttpPromiseCallbackArg<string>) => {
                 // This is naive way of dynamically loading and executing script. But it works for the purpose of this example.
+                let script = response.data;
                 jQuery.globalEval(script);
 
                 app.controllerProvider.register(controllerName, function() {
@@ -22,8 +23,7 @@
                     scope.registerStep.call(scope.$parent.vm, scope.vm);
                     $compile(element.contents())(scope);
                 });
-            })
-            .error(() => {
+            }, () => {
                 alert('Unable to load wizard step control ' + controlName);
             });
     }
