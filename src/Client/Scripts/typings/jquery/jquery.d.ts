@@ -3246,4 +3246,5 @@ declare module "jquery" {
     export = $;
 }
 declare var jQuery: JQueryStatic;
-declare var $: JQueryStatic;
+// conflicts with protractor
+//declare var $: JQueryStatic;
