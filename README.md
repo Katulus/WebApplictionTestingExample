@@ -1,6 +1,8 @@
 # How to write testable web applications - sample project
 Sample project for web applications testing lessons.
 
+### **Old version**: *If you are looking for old version built on ASP.NET WebApi2 (.NET Framework 4.6.2) and AngularJS 1.6 check branch named [old](https://github.com/Katulus/WebApplictionTestingExample/tree/old)*
+
 ## Prerequisites
 You need:
 - [.NET Core 2.0 SDK](https://www.microsoft.com/net/download/windows)
