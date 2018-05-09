@@ -8,7 +8,7 @@ class AddNodeStep {
     private _navigator = element(by.css('.sw-wizard-nav-item'));
 
     public navigate() {
-        browser.get('http://localhost:8081/#/add');
+        browser.get('http://localhost:8081/#!/add');
     }
 
     public isLoaded(): Promise<boolean> {
